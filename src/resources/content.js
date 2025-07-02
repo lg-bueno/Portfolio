@@ -1,16 +1,16 @@
 import { Logo } from "@once-ui-system/core";
 
 const person = {
-  firstName: "Selene",
-  lastName: "Yu",
+  firstName: "Leandro",
+  lastName: "Gabriel",
   get name() {
     return `${this.firstName} ${this.lastName}`;
   },
-  role: "Design Engineer",
+  role: "Developer",
   avatar: "/images/avatar.jpg",
-  email: "example@gmail.com",
-  location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
+  email: "leandrogabriel@buenodevsec.com.br",
+  location: "America/Sao_Paulo", // e.g., 'Europe/Vienna'
+  languages: ["Portuguese", "English", "Russian"], 
 };
 
 const newsletter = {
@@ -22,7 +22,7 @@ const newsletter = {
       creativity and engineering.
     </>
   ),
-};
+}; 
 
 const social = [
   // Links are automatically displayed.
@@ -30,17 +30,12 @@ const social = [
   {
     name: "GitHub",
     icon: "github",
-    link: "https://github.com/once-ui-system/nextjs-starter",
+    link: "https://github.com/lg-bueno",
   },
   {
     name: "LinkedIn",
     icon: "linkedin",
-    link: "https://www.linkedin.com/company/once-ui/",
-  },
-  {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+    link: "https://www.linkedin.com/in/leandro--gabriel/",
   },
   {
     name: "Email",
@@ -55,7 +50,7 @@ const home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Building bridges between design and code</>,
+  headline: <>Desenvolvedor Full Stack com foco em Segurança</>,
   featured: {
     display: true,
     title: <>Recent project: <strong className="ml-4">Once UI</strong></>,
@@ -63,8 +58,7 @@ const home = {
   },
   subline: (
     <>
-      I'm Selene, a design engineer at <Logo icon="/trademarks/wordmark-dark.svg" style={{ display: "inline-flex", top: "0.25em", marginLeft: "-0.25em" }}/>, where I craft intuitive
-      <br /> user experiences. After hours, I build my own projects.
+      Construo soluções seguras, escaláveis e eficientes, unindo desenvolvimento e práticas de cibersegurança.
     </>
   ),
 };
@@ -82,17 +76,15 @@ const about = {
     display: true,
   },
   calendar: {
-    display: true,
-    link: "https://cal.com",
+    display: false,
+    link: "",
   },
   intro: {
     display: true,
     title: "Introduction",
     description: (
       <>
-        Selene is a Jakarta-based design engineer with a passion for transforming complex challenges
-        into simple, elegant design solutions. Her work spans digital interfaces, interactive
-        experiences, and the convergence of design and technology.
+        Desenvolvedor full stack com experiência em segurança ofensiva e defensiva, entusiasta de CTFs e automação de ferramentas.
       </>
     ),
   },
@@ -101,9 +93,9 @@ const about = {
     title: "Work Experience",
     experiences: [
       {
-        company: "FLY",
-        timeframe: "2022 - Present",
-        role: "Senior Design Engineer",
+        company: "NOX5 Offensive Security",
+        timeframe: "2024 - Atualmente",
+        role: "Técnico júnior",
         achievements: [
           <>
             Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user
@@ -114,28 +106,32 @@ const about = {
             iterate 50% faster.
           </>,
         ],
-        images: [
-          // optional: leave the array empty if you don't want to display images
-          {
-            src: "/images/projects/project-01/cover-01.jpg",
-            alt: "Once UI Project",
-            width: 16,
-            height: 9,
-          },
-        ],
+        images: [],
       },
       {
-        company: "Creativ3",
-        timeframe: "2018 - 2022",
-        role: "Lead Designer",
+        company: "OVG - Organização das Voluntárias de Goiás",
+        timeframe: "2022 - 2023",
+        role: "Estagiário de Desenvolvimento Back-End",
         achievements: [
           <>
-            Developed a design system that unified the brand across multiple platforms, improving
-            design consistency by 40%.
+            Colaborei no desenvolvimento e manutenção de sistemas internos utilizando C++ e Python.
           </>,
           <>
-            Led a cross-functional team to launch a new product line, contributing to a 15% increase
-            in overall company revenue.
+            Auxiliei na modernização de aplicações legadas, contribuindo para maior eficiência e estabilidade.
+          </>,
+        ],
+        images: [],
+      },
+      {
+        company: "Assembleia Legislativa do Estado de Goiás",
+        timeframe: "2021 - 2022",
+        role: "Estagiário de Desenvolvimento Front-End",
+        achievements: [
+          <>
+            Desenvolvi interfaces responsivas com HTML5, CSS3 e JavaScript, focando em acessibilidade e usabilidade.
+          </>,
+          <>
+            Trabalhei com React.js para implementar funcionalidades modernas e otimizadas em projetos institucionais.
           </>,
         ],
         images: [],
@@ -143,54 +139,37 @@ const about = {
     ],
   },
   studies: {
-    display: true, // set to false to hide this section
-    title: "Studies",
+    display: true, 
+    title: "Formação Acadêmica",
     institutions: [
       {
-        name: "University of Jakarta",
-        description: <>Studied software engineering.</>,
+        name: "Acadi-TI",
+        description: <>Pós-graduação em Cibersegurança.</>,
       },
       {
-        name: "Build the Future",
-        description: <>Studied online marketing and personal branding.</>,
+        name: "Universidade Estácio de Sá",
+        description: <>Bacharelado em Ciência da Computação.</>,
       },
     ],
   },
   technical: {
-    display: true, // set to false to hide this section
-    title: "Technical skills",
+    display: true, 
+    title: "Habilidades Técnicas",
     skills: [
       {
-        title: "Figma",
-        description: <>Able to prototype in Figma with Once UI with unnatural speed.</>,
-        // optional: leave the array empty if you don't want to display images
-        images: [
-          {
-            src: "/images/projects/project-01/cover-02.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-          {
-            src: "/images/projects/project-01/cover-03.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-        ],
+        title: "Linguagens de Programação",
+        description: <>Python, Bash Scripting, C/C++ e JavaScript.</>, 
+        images: [],
       },
       {
-        title: "Next.js",
-        description: <>Building next gen apps with Next.js + Once UI + Supabase.</>,
-        // optional: leave the array empty if you don't want to display images
-        images: [
-          {
-            src: "/images/projects/project-01/cover-04.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-        ],
+        title: "Sistemas Operacionais",
+        description: <>Kali Linux, Windows, Windows Server, Ubuntu e Ubuntu Server</>,
+        images: [],
+      },
+      {
+        title: "Ferramentas de Segurança",
+        description: <>Nmap, Subfinder, Burp Suite, SQLMap, Aircrack-ng, Wireshark, Hashcat, entre outros. </>,
+        images: [],
       },
     ],
   },
