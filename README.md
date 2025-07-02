@@ -1,8 +1,3 @@
-<!-- Banner animado ou imagem OG -->
-<p align="center">
-  <img src="https://your-og-image-url.com/banner.gif" width="700" alt="Portfolio Banner" />
-</p>
-
 <h1 align="center">Portfolio</h1>
 
 <p align="center">
