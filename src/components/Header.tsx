@@ -9,6 +9,8 @@ import { routes, display, person, about, blog, work, gallery } from "@/resources
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./Header.module.scss";
 
+import LocationDisplay from "./LocationDisplay";
+
 type TimeDisplayProps = {
   timeZone: string;
   locale?: string; // Optionally allow locale, defaulting to 'en-GB'
@@ -61,7 +63,11 @@ export const Header = () => {
         data-border="rounded"
       >
         <Flex paddingLeft="12" fillWidth vertical="center" textVariant="body-default-s">
-          {display.location && <Flex hide="s">{person.location}</Flex>}
+          {display.location && (
+            <Flex hide="s">
+              <LocationDisplay timeZone={person.location} />
+                </Flex>
+          )}
         </Flex>
         <Flex fillWidth horizontal="center">
           <Flex

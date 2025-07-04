@@ -1,10 +1,19 @@
 import React from "react";
 
-import { Heading, Flex, Text, Button, Avatar, RevealFx, Column, Badge, Row, Meta, Schema } from "@once-ui-system/core";
-import { home, about, person, newsletter, baseURL, routes } from "@/resources";
-import { Mailchimp } from "@/components";
-import { Projects } from "@/components/work/Projects";
-import { Posts } from "@/components/blog/Posts";
+import {
+  Heading,
+  Flex,
+  Text,
+  Button,
+  Avatar,
+  RevealFx,
+  Column,
+  Badge,
+  Row,
+  Schema,
+} from "@once-ui-system/core";
+
+import { home, about, person, baseURL, routes } from "@/resources";
 
 export default function Home() {
   return (
@@ -22,26 +31,38 @@ export default function Home() {
           image: `${baseURL}${person.avatar}`,
         }}
       />
+
+      {/* HERO */}
       <Column fillWidth paddingY="24" gap="m">
         <Column maxWidth="s">
           {home.featured.display && (
-          <RevealFx fillWidth horizontal="start" paddingTop="16" paddingBottom="32" paddingLeft="12">
-            <Badge background="brand-alpha-weak" paddingX="12" paddingY="4" onBackground="neutral-strong" textVariant="label-default-s" arrow={false}
-              href={home.featured.href}>
-              <Row paddingY="2">{home.featured.title}</Row>
-            </Badge>
-          </RevealFx>
+            <RevealFx fillWidth horizontal="start" paddingTop="16" paddingBottom="32" paddingLeft="12">
+              <Badge
+                background="brand-alpha-weak"
+                paddingX="12"
+                paddingY="4"
+                onBackground="neutral-strong"
+                textVariant="label-default-s"
+                arrow={false}
+                href={home.featured.href}
+              >
+                <Row paddingY="2">{home.featured.title}</Row>
+              </Badge>
+            </RevealFx>
           )}
+
           <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
             <Heading wrap="balance" variant="display-strong-l">
               {home.headline}
             </Heading>
           </RevealFx>
+
           <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
             <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
               {home.subline}
             </Text>
           </RevealFx>
+
           <RevealFx paddingTop="12" delay={0.4} horizontal="start" paddingLeft="12">
             <Button
               id="about"
@@ -67,23 +88,65 @@ export default function Home() {
           </RevealFx>
         </Column>
       </Column>
+
+      {/* UNDER CONSTRUCTION IMAGE */}
       <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
+        <Flex horizontal="center" paddingY="16">
+          <img
+            src="https://media.giphy.com/media/UoLt6Tm8wlSnWGfSFs/giphy.gif"
+            alt="Under Construction"
+            style={{
+              width: "100%",
+              maxWidth: "480px",
+              height: "auto",
+              borderRadius: "12px",
+            }}
+          />
+        </Flex>
       </RevealFx>
+
+      {/* TEXTO PARA ESPAÇO DE PROJETOS */}
+      <RevealFx translateY="16" delay={0.7}>
+        <Flex horizontal="center" paddingBottom="24" paddingX="12">
+          <Text variant="heading-default-l" wrap="balance" align="center">
+            This space will soon showcase impactful projects and hands-on experiences. Stay tuned!
+          </Text>
+        </Flex>
+      </RevealFx>
+
+      {/* WRITE-UPS */}
       {routes["/blog"] && (
-        <Flex fillWidth gap="24" mobileDirection="column">
-          <Flex flex={1} paddingLeft="l" paddingTop="24">
+        <Column gap="l" paddingBottom="48">
+          <Flex paddingLeft="l" paddingTop="24" horizontal="center">
             <Heading as="h2" variant="display-strong-xs" wrap="balance">
-              Latest from the blog
+              Write-ups
             </Heading>
           </Flex>
-          <Flex flex={3} paddingX="20">
-            <Posts range={[1, 2]} columns="2" />
+
+          <Flex wrap="wrap" gap="32" justify="center" paddingX="12">
+            {[1, 2, 3].map((_, index) => (
+              <Column
+                key={index}
+                padding="16"
+                border="neutral-alpha-weak"
+                radius="l"
+                maxWidth="280"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.02)",
+                  textAlign: "left",
+                }}
+              >
+                <Heading as="h3" variant="display-strong-xxs" paddingBottom="8">
+                  Coming Soon
+                </Heading>
+                <Text onBackground="neutral-weak">
+                  This section is under development. Write-ups and security articles will be published soon.
+                </Text>
+              </Column>
+            ))}
           </Flex>
-        </Flex>
+        </Column>
       )}
-      <Projects range={[2]} />
-      {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>
   );
 }
