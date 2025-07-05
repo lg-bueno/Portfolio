@@ -123,7 +123,7 @@ export default function Home() {
             </Heading>
           </Flex>
 
-          <Flex wrap="wrap" gap="32" justify="center" paddingX="12">
+          <Flex wrap gap="32" justify="center" paddingX="12">
             {[1, 2, 3].map((_, index) => (
               <Column
                 key={index}
