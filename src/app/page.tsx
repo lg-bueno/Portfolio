@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Mailchimp } from "@/components";
+
 import {
   Heading,
   Flex,
