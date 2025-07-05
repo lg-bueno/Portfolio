@@ -1,4 +1,4 @@
-"use client";
+/** "use client";
 
 import { mailchimp } from "@/resources";
 import { Button, Flex, Heading, Input, Text, Background, Column } from "@once-ui-system/core";
@@ -184,4 +184,4 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
       </form>
     </Column>
   );
-};
+};*/
