@@ -109,7 +109,7 @@ export default function Home() {
       <RevealFx translateY="16" delay={0.7}>
         <Flex horizontal="center" paddingBottom="24" paddingX="12">
           <Text variant="heading-default-l" wrap="balance" align="center">
-            This space will soon showcase impactful projects and hands-on experiences. Stay tuned!
+            Algo incrível está sendo preparado. Em breve, você verá aqui o que tenho construído com paixão e propósito.
           </Text>
         </Flex>
       </RevealFx>
@@ -123,20 +123,20 @@ export default function Home() {
             </Heading>
           </Flex>
 
-          <Flex wrap gap="32" justify="center" paddingX="12">
+          <Flex wrap gap="32" horizontal="center" paddingX="12">
             {[1, 2, 3].map((_, index) => (
               <Column
                 key={index}
                 padding="16"
                 border="neutral-alpha-weak"
                 radius="l"
-                maxWidth="280"
+                maxWidth={280}
                 style={{
                   backgroundColor: "rgba(255,255,255,0.02)",
                   textAlign: "left",
                 }}
               >
-                <Heading as="h3" variant="display-strong-xxs" paddingBottom="8">
+                <Heading as="h3" variant="display-strong-xs" paddingBottom="8">
                   Coming Soon
                 </Heading>
                 <Text onBackground="neutral-weak">
