@@ -117,7 +117,7 @@ portfolio.js/<br>
 # Clone o repositório
 
 <pre>
-git clone https://github.com/seu-usuario/portfolio.js.git
+git clone https://github.com/lg-bueno/portfolio.js.git
 </pre>
 
 # Instale as dependências
