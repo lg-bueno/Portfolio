@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 import {
   Heading,
@@ -92,16 +93,13 @@ export default function Home() {
       {/* UNDER CONSTRUCTION IMAGE */}
       <RevealFx translateY="16" delay={0.6}>
         <Flex horizontal="center" paddingY="16">
-          <img
-            src="https://media.giphy.com/media/UoLt6Tm8wlSnWGfSFs/giphy.gif"
-            alt="Under Construction"
-            style={{
-              width: "100%",
-              maxWidth: "480px",
-              height: "auto",
-              borderRadius: "12px",
-            }}
-          />
+        <Image
+          src="https://media.giphy.com/media/UoLt6Tm8wlSnWGfSFs/giphy.gif"
+          alt="Under Construction"
+          width={480}
+          height={270}
+          style={{ width: "100%", maxWidth: "480px", height: "auto", borderRadius: "12px" }}
+/>
         </Flex>
       </RevealFx>
 
