@@ -5,9 +5,8 @@ export {
   newsletter,
   home,
   about,
-  blog,
   work,
-  gallery,
+  certifications,
 } from "./content";
 
 export { display, routes, protectedRoutes, baseURL, fonts, style, schema, sameAs, effects, dataStyle } from "./once-ui.config";

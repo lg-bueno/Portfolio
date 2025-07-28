@@ -52,7 +52,7 @@ const home = {
   description: `Portfolio website showcasing my work as a ${person.role}`,
   headline: <>Desenvolvedor Full Stack com foco em Segurança</>,
   featured: {
-    display: true,
+    display: false,
     title: <>Recent project: <strong className="ml-4">Once UI</strong></>,
     href: "/work/building-once-ui-a-customizable-design-system",
   },
@@ -98,12 +98,10 @@ const about = {
         role: "Técnico júnior",
         achievements: [
           <>
-            Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user
-            engagement and 30% faster load times.
+            Atuo na administração e otimização de ambientes Active Directory e Microsoft 365, essenciais para a gestão de identidades e acessos. Sou responsável pela configuração e proteção da infraestrutura de rede com firewalls Fortinet e Sophos.
           </>,
           <>
-            Spearheaded the integration of AI tools into design workflows, enabling designers to
-            iterate 50% faster.
+            Gerencio dispositivos de rede e sistemas de backup (Proxmox, Veeam), e desenvolvo scripts para automatizar tarefas de segurança e operação, contribuindo para a eficiência e resiliência da defesa da empresa.
           </>,
         ],
         images: [],
@@ -175,73 +173,22 @@ const about = {
   },
 };
 
-const blog = {
-  path: "/blog",
-  label: "Blog",
-  title: "Writing about design and tech...",
-  description: `Read what ${person.name} has been up to recently`,
-  // Create new blog posts by adding a new .mdx file to app/blog/posts
-  // All posts will be listed on the /blog route
-};
+
 
 const work = {
   path: "/work",
-  label: "Work",
-  title: `Projects – ${person.name}`,
-  description: `Design and dev projects by ${person.name}`,
-  // Create new project pages by adding a new .mdx file to app/blog/posts
-  // All projects will be listed on the /home and /work routes
+  label: "Write-ups",
+  title: `Security Write-ups – ${person.name}`,
+  description: `Security research and CTF write-ups by ${person.name}`,
+  // Create new write-up pages by adding a new .mdx file to app/work/projects
+  // All write-ups will be listed on the /home and /work routes
 };
 
-const gallery = {
-  path: "/gallery",
-  label: "Gallery",
-  title: `Photo gallery – ${person.name}`,
-  description: `A photo collection by ${person.name}`,
-  // Images by https://lorant.one
-  // These are placeholder images, replace with your own
-  images: [
-    {
-      src: "/images/gallery/horizontal-1.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-2.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-3.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-4.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/vertical-1.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/vertical-2.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/vertical-3.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/vertical-4.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-  ],
+const certifications = {
+  path: "/certifications",
+  label: "Certifications",
+  title: `Certifications & Badges – ${person.name}`,
+  description: `Credentials and recognitions in information security`,
 };
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+export { person, social, newsletter, home, about, work, certifications };

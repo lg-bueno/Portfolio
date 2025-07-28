@@ -1,14 +1,14 @@
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
 import { Posts } from "@/components/blog/Posts";
-import { baseURL, blog, person, newsletter } from "@/resources";
+import { baseURL, person, newsletter } from "@/resources";
 
 export async function generateMetadata() {
   return Meta.generate({
-    title: blog.title,
-    description: blog.description,
+    title: "Blog",
+    description: "Blog posts",
     baseURL: baseURL,
-    image: `/api/og/generate?title=${encodeURIComponent(blog.title)}`,
-    path: blog.path,
+    image: `/api/og/generate?title=${encodeURIComponent("Blog")}`,
+    path: "/blog",
   });
 }
 
@@ -16,12 +16,12 @@ export default function Blog() {
   return (
     <Column maxWidth="s">
       <Schema
-        as="blogPosting"
+        as="webPage"
         baseURL={baseURL}
-        title={blog.title}
-        description={blog.description}
-        path={blog.path}
-        image={`/api/og/generate?title=${encodeURIComponent(blog.title)}`}
+        title="Blog"
+        description="Blog posts"
+        path="/blog"
+        image={`/api/og/generate?title=${encodeURIComponent("Blog")}`}
         author={{
           name: person.name,
           url: `${baseURL}/blog`,
@@ -29,13 +29,13 @@ export default function Blog() {
         }}
       />
       <Heading marginBottom="l" variant="display-strong-s">
-        {blog.title}
+        Blog
       </Heading>
-      <Column
-				fillWidth flex={1}>
-				<Posts range={[1,1]} thumbnail direction="column"/>
-				<Posts range={[2,3]} thumbnail/>
-				<Posts range={[4]} columns="2"/>
-			</Column>
+      <Column fillWidth flex={1}>
+        <Posts range={[1,1]} thumbnail direction="column"/>
+        <Posts range={[2,3]} thumbnail/>
+        <Posts range={[4]} columns="2"/>
+      </Column>
+    </Column>
   );
-/</Column>)}
+}

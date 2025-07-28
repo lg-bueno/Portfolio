@@ -15,6 +15,7 @@ import {
 } from "@once-ui-system/core";
 
 import { home, about, person, baseURL, routes } from "@/resources";
+import { RecentWriteups } from "@/components/home/RecentWriteups";
 
 export default function Home() {
   return (
@@ -90,61 +91,12 @@ export default function Home() {
         </Column>
       </Column>
 
-      {/* UNDER CONSTRUCTION IMAGE */}
-      <RevealFx translateY="16" delay={0.6}>
-        <Flex horizontal="center" paddingY="16">
-        <Image
-          src="https://media.giphy.com/media/UoLt6Tm8wlSnWGfSFs/giphy.gif"
-          alt="Under Construction"
-          width={480}
-          height={270}
-          style={{ width: "100%", maxWidth: "480px", height: "auto", borderRadius: "12px" }}
-/>
-        </Flex>
-      </RevealFx>
 
-      {/* TEXTO PARA ESPAÇO DE PROJETOS */}
-      <RevealFx translateY="16" delay={0.7}>
-        <Flex horizontal="center" paddingBottom="24" paddingX="12">
-          <Text variant="heading-default-l" wrap="balance" align="center">
-            Algo incrível está sendo preparado. Em breve, você verá aqui o que tenho construído com paixão e propósito.
-          </Text>
-        </Flex>
-      </RevealFx>
 
-      {/* WRITE-UPS */}
-      {routes["/blog"] && (
-        <Column gap="l" paddingBottom="48">
-          <Flex paddingLeft="l" paddingTop="24" horizontal="center">
-            <Heading as="h2" variant="display-strong-xs" wrap="balance">
-              Write-ups
-            </Heading>
-          </Flex>
+      {/* WRITE-UPS RECENTES */}
+      <RecentWriteups />
 
-          <Flex wrap gap="32" horizontal="center" paddingX="12">
-            {[1, 2, 3].map((_, index) => (
-              <Column
-                key={index}
-                padding="16"
-                border="neutral-alpha-weak"
-                radius="l"
-                maxWidth={280}
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.02)",
-                  textAlign: "left",
-                }}
-              >
-                <Heading as="h3" variant="display-strong-xs" paddingBottom="8">
-                  Coming Soon
-                </Heading>
-                <Text onBackground="neutral-weak">
-                  This section is under development. Write-ups and security articles will be published soon.
-                </Text>
-              </Column>
-            ))}
-          </Flex>
-        </Column>
-      )}
+
     </Column>
   );
 }
