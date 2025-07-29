@@ -563,32 +563,9 @@ NODE_ENV=development npm run dev
 DEBUG=* npm run dev
 ```
 
-## 🤝 Contribuição
-
-### **📋 Como Contribuir**
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-### **📝 Padrões de Código**
-- **TypeScript**: Tipagem estrita
-- **ESLint**: Linting automático
-- **Prettier**: Formatação consistente
-- **Conventional Commits**: Padrão de commits
-
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
-
-### **📋 Termos de Uso**
-- ✅ Uso comercial permitido
-- ✅ Modificação permitida
-- ✅ Distribuição permitida
-- ✅ Uso privado permitido
-- ❌ Responsabilidade limitada
-- ❌ Garantia limitada
 
 ## 👨‍💻 Autor
 
@@ -610,9 +587,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para 
 ### **🔗 Links Úteis**
 - 🌐 [Website](https://buenodevsec.com.br)
 - 📧 [Email](mailto:leandrogabriel@buenodevsec.com.br)
-- 💼 [LinkedIn](https://linkedin.com/in/leandrogabriel)
-- 🐦 [Twitter](https://twitter.com/lg_bueno)
-- 📚 [Blog](https://buenodevsec.com.br/blog)
+- 💼 [LinkedIn](https://www.linkedin.com/in/leandro--gabriel)
 
 ---
 
