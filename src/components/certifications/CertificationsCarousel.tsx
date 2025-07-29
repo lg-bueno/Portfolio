@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Column, Flex, Heading, Text, Media, Button } from "@once-ui-system/core";
+import Image from "next/image";
 import { getImageUrl } from "@/utils/imageHash";
 
 interface Certification {
@@ -13,6 +14,31 @@ interface Certification {
   date: string;
   category: string;
   subcategory?: string;
+}
+
+// Hook para detectar tamanho da tela de forma segura
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    height: typeof window !== 'undefined' ? window.innerHeight : 768,
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  return windowSize;
 }
 
 const certifications: Certification[] = [
@@ -362,6 +388,9 @@ const certifications: Certification[] = [
 ];
 
 export default function CertificationsCarousel() {
+  const { width } = useWindowSize();
+  const isMobile = width <= 768;
+  
   const [currentCategory, setCurrentCategory] = useState("Endpoint & EDR");
   const [currentSubcategory, setCurrentSubcategory] = useState("Bitdefender");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -507,7 +536,7 @@ export default function CertificationsCarousel() {
             style={{
               borderRadius: "24px",
               padding: "8px 16px",
-              fontSize: window.innerWidth <= 768 ? "14px" : "16px"
+              fontSize: isMobile ? "14px" : "16px"
             }}
           >
             {category}
@@ -531,7 +560,7 @@ export default function CertificationsCarousel() {
               style={{
                 borderRadius: "16px",
                 padding: "6px 12px",
-                fontSize: window.innerWidth <= 768 ? "12px" : "14px"
+                fontSize: isMobile ? "12px" : "14px"
               }}
             >
               {subcategory}
@@ -557,10 +586,10 @@ export default function CertificationsCarousel() {
           onClick={prevSlide}
           className="mobile-reduce-animations"
           style={{
-            position: window.innerWidth <= 768 ? "relative" : "absolute",
-            left: window.innerWidth <= 768 ? "auto" : "-70px",
-            top: window.innerWidth <= 768 ? "auto" : "50%",
-            transform: window.innerWidth <= 768 ? "none" : "translateY(-50%)",
+            position: isMobile ? "relative" : "absolute",
+            left: isMobile ? "auto" : "-70px",
+            top: isMobile ? "auto" : "50%",
+            transform: isMobile ? "none" : "translateY(-50%)",
             zIndex: 10,
             minWidth: "56px",
             height: "56px",
@@ -568,7 +597,7 @@ export default function CertificationsCarousel() {
             backgroundColor: "var(--surface-elevated)",
             border: "2px solid var(--neutral-alpha-weak)",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            marginBottom: window.innerWidth <= 768 ? "16px" : "0"
+            marginBottom: isMobile ? "16px" : "0"
           }}
         />
 
@@ -584,7 +613,7 @@ export default function CertificationsCarousel() {
             border: "1px solid var(--neutral-alpha-weak)",
             borderRadius: "20px",
             backgroundColor: "var(--surface-background)",
-            minHeight: window.innerWidth <= 768 ? "400px" : "500px",
+            minHeight: isMobile ? "400px" : "500px",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
           }}
         >
@@ -594,20 +623,22 @@ export default function CertificationsCarousel() {
             paddingY="xl"
             style={{
               width: "100%",
-              maxWidth: window.innerWidth <= 768 ? "300px" : "400px",
-              height: window.innerWidth <= 768 ? "200px" : "280px",
+              maxWidth: isMobile ? "300px" : "400px",
+              height: isMobile ? "200px" : "280px",
               backgroundColor: "var(--surface-elevated)",
               borderRadius: "16px",
               border: "1px solid var(--neutral-alpha-weak)",
-              padding: window.innerWidth <= 768 ? "16px" : "25px"
+              padding: isMobile ? "16px" : "25px"
             }}
           >
-            <img
+            <Image
               src={`/api/images?hash=${currentCert.image}`}
               alt={currentCert.title}
+              width={isMobile ? 268 : 350}
+              height={isMobile ? 168 : 230}
               style={{
                 width: "100%",
-                height: window.innerWidth <= 768 ? "150px" : "200px",
+                height: isMobile ? "150px" : "200px",
                 objectFit: "contain",
                 borderRadius: "8px",
                 maxWidth: "100%"
@@ -626,7 +657,7 @@ export default function CertificationsCarousel() {
                 vertical="center"
                 style={{
                   width: "100%",
-                  height: window.innerWidth <= 768 ? "150px" : "200px",
+                  height: isMobile ? "150px" : "200px",
                   backgroundColor: "var(--neutral-alpha-weak)",
                   borderRadius: "8px",
                   color: "var(--neutral-on-background-weak)"
@@ -702,10 +733,10 @@ export default function CertificationsCarousel() {
           onClick={nextSlide}
           className="mobile-reduce-animations"
           style={{
-            position: window.innerWidth <= 768 ? "relative" : "absolute",
-            right: window.innerWidth <= 768 ? "auto" : "-70px",
-            top: window.innerWidth <= 768 ? "auto" : "50%",
-            transform: window.innerWidth <= 768 ? "none" : "translateY(-50%)",
+            position: isMobile ? "relative" : "absolute",
+            right: isMobile ? "auto" : "-70px",
+            top: isMobile ? "auto" : "50%",
+            transform: isMobile ? "none" : "translateY(-50%)",
             zIndex: 10,
             minWidth: "56px",
             height: "56px",
@@ -713,7 +744,7 @@ export default function CertificationsCarousel() {
             backgroundColor: "var(--surface-elevated)",
             border: "2px solid var(--neutral-alpha-weak)",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            marginTop: window.innerWidth <= 768 ? "16px" : "0"
+            marginTop: isMobile ? "16px" : "0"
           }}
         />
       </Flex>

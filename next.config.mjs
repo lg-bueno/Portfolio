@@ -33,8 +33,6 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   generateEtags: false,
-  // Melhorar performance em mobile
-  swcMinify: true,
   // Configurações para melhor responsividade
   async headers() {
     return [

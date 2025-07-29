@@ -14,8 +14,36 @@ interface Post {
   };
 }
 
+// Hook para detectar tamanho da tela de forma segura
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    height: typeof window !== 'undefined' ? window.innerHeight : 768,
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  return windowSize;
+}
+
 export function RecentWriteups() {
   const router = useRouter();
+  const { width } = useWindowSize();
+  const isMobile = width <= 768;
+  
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -92,19 +120,19 @@ export function RecentWriteups() {
                 cursor: "pointer",
                 transition: "all 0.2s ease",
                 backgroundColor: "var(--surface-background)",
-                flexDirection: window.innerWidth <= 768 ? "column" : "row",
-                alignItems: window.innerWidth <= 768 ? "center" : "flex-start",
-                textAlign: window.innerWidth <= 768 ? "center" : "left",
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: isMobile ? "center" : "flex-start",
+                textAlign: isMobile ? "center" : "left",
               }}
               onClick={() => handleClick(post.slug)}
               onMouseEnter={(e) => {
-                if (window.innerWidth > 768) {
+                if (!isMobile) {
                   e.currentTarget.style.transform = "translateY(-2px)";
                   e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
                 }
               }}
               onMouseLeave={(e) => {
-                if (window.innerWidth > 768) {
+                if (!isMobile) {
                   e.currentTarget.style.transform = "translateY(0)";
                   e.currentTarget.style.boxShadow = "none";
                 }
@@ -113,12 +141,12 @@ export function RecentWriteups() {
               {/* Imagem de Capa */}
               <Flex 
                 style={{ 
-                  width: window.innerWidth <= 768 ? "100%" : "120px", 
-                  height: window.innerWidth <= 768 ? "160px" : "80px",
+                  width: isMobile ? "100%" : "120px", 
+                  height: isMobile ? "160px" : "80px",
                   borderRadius: "8px",
                   overflow: "hidden",
                   flexShrink: 0,
-                  marginBottom: window.innerWidth <= 768 ? "12px" : "0"
+                  marginBottom: isMobile ? "12px" : "0"
                 }}
               >
                 <Media
@@ -133,7 +161,7 @@ export function RecentWriteups() {
               </Flex>
 
               {/* Conteúdo */}
-              <Column flex={1} gap="s" style={{ width: window.innerWidth <= 768 ? "100%" : "auto" }}>
+              <Column flex={1} gap="s" style={{ width: isMobile ? "100%" : "auto" }}>
                 <Heading 
                   as="h3" 
                   variant="heading-strong-m" 

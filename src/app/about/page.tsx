@@ -1,82 +1,42 @@
-import {
-  Avatar,
-  Button,
-  Column,
-  Flex,
-  Heading,
-  Icon,
-  IconButton,
-  Media,
-  Tag,
-  Text,
-  Meta,
-  Schema
-} from "@once-ui-system/core";
-import { baseURL, about, person, social } from "@/resources";
-import TableOfContents from "@/components/about/TableOfContents";
-import styles from "@/components/about/about.module.scss";
-import React from "react";
+"use client";
 
-export async function generateMetadata() {
-  return Meta.generate({
-    title: about.title,
-    description: about.description,
-    baseURL: baseURL,
-    image: `/api/og/generate?title=${encodeURIComponent(about.title)}`,
-    path: about.path,
+import React from "react";
+import { Column, Flex, Heading, Text, Button, IconButton, Avatar, Icon, RevealFx } from "@once-ui-system/core";
+import { about, person, social } from "@/resources";
+import styles from "@/components/about/about.module.scss";
+import { useEffect, useState } from "react";
+
+// Hook para detectar tamanho da tela de forma segura
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    height: typeof window !== 'undefined' ? window.innerHeight : 768,
   });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  return windowSize;
 }
 
 export default function About() {
-  const structure = [
-    {
-      title: about.intro.title,
-      display: about.intro.display,
-      items: [],
-    },
-    {
-      title: about.work.title,
-      display: about.work.display,
-      items: about.work.experiences.map((experience) => experience.company),
-    },
-    {
-      title: about.studies.title,
-      display: about.studies.display,
-      items: about.studies.institutions.map((institution) => institution.name),
-    },
-    {
-      title: about.technical.title,
-      display: about.technical.display,
-      items: about.technical.skills.map((skill) => skill.title),
-    },
-  ];
+  const { width } = useWindowSize();
+  const isMobile = width <= 768;
+
   return (
     <Column maxWidth="m" className="mobile-padding">
-      <Schema
-        as="webPage"
-        baseURL={baseURL}
-        title={about.title}
-        description={about.description}
-        path={about.path}
-        image={`/api/og/generate?title=${encodeURIComponent(about.title)}`}
-        author={{
-          name: person.name,
-          url: `${baseURL}${about.path}`,
-          image: `${baseURL}${person.avatar}`,
-        }}
-      />
-      {about.tableOfContent.display && (
-        <Column
-          left="0"
-          style={{ top: "50%", transform: "translateY(-50%)" }}
-          position="fixed"
-          paddingLeft="24"
-          gap="32"
-          hide="s"
-        >
-          <TableOfContents structure={structure} about={about} />
-        </Column>
-      )}
       <Flex fillWidth mobileDirection="column" horizontal="center" className="mobile-gap">
         {about.avatar.display && (
           <Column
@@ -89,8 +49,8 @@ export default function About() {
             flex={3}
             horizontal="center"
             style={{
-              width: window.innerWidth <= 768 ? "100%" : "auto",
-              position: window.innerWidth <= 768 ? "static" : "sticky"
+              width: isMobile ? "100%" : "auto",
+              position: isMobile ? "static" : "sticky"
             }}
           >
             <Avatar src={person.avatar} size="xl" />
@@ -100,16 +60,27 @@ export default function About() {
             </Flex>
             {person.languages.length > 0 && (
               <Flex wrap gap="8" horizontal="center">
-                {person.languages.map((language, index) => (
-                  <Tag key={language} size="l">
+                {person.languages.map((language) => (
+                  <Text
+                    key={language}
+                    variant="body-default-xs"
+                    onBackground="neutral-weak"
+                    style={{
+                      padding: "4px 8px",
+                      borderRadius: "12px",
+                      backgroundColor: "var(--neutral-alpha-weak)",
+                      color: "var(--neutral-on-background-weak)",
+                      fontSize: "12px"
+                    }}
+                  >
                     {language}
-                  </Tag>
+                  </Text>
                 ))}
               </Flex>
             )}
           </Column>
         )}
-        <Column className={`${styles.blockAlign} mobile-padding`} flex={9} maxWidth={40} style={{ width: window.innerWidth <= 768 ? "100%" : "auto" }}>
+        <Column className={`${styles.blockAlign} mobile-padding`} flex={9} maxWidth={40} style={{ width: isMobile ? "100%" : "auto" }}>
           <Column
             id={about.intro.title}
             fillWidth
@@ -118,209 +89,220 @@ export default function About() {
             marginBottom="32"
             className="mobile-gap"
           >
-            {about.calendar.display && (
-              <Flex
-                fitWidth
-                border="brand-alpha-medium"
-                className={styles.blockAlign}
-                style={{
-                  backdropFilter: "blur(var(--static-space-1))",
-                }}
-                background="brand-alpha-weak"
-                radius="full"
-                padding="4"
-                gap="8"
-                marginBottom="m"
-                vertical="center"
+            <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
+              <Button
+                href={about.path}
+                variant="tertiary"
+                size="s"
+                prefixIcon="calendar"
+                className="mobile-reduce-animations"
               >
-                <Icon paddingLeft="12" name="calendar" onBackground="brand-weak" />
-                <Flex paddingX="8">Schedule a call</Flex>
-                <IconButton
-                  href={about.calendar.link}
-                  data-border="rounded"
-                  variant="secondary"
-                  icon="chevronRight"
-                />
-              </Flex>
-            )}
-            <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-xl">
-              {person.name}
-            </Heading>
-            <Text
-              className={`${styles.textAlign} text-mobile`}
-              variant="display-default-xs"
-              onBackground="neutral-weak"
-            >
-              {person.role}
-            </Text>
+                {about.label}
+              </Button>
+            </RevealFx>
+            <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
+              <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-xl">
+                {person.name}
+              </Heading>
+            </RevealFx>
+            <RevealFx translateY="12" delay={0.4} fillWidth horizontal="start" paddingBottom="32">
+              <Text
+                className={`${styles.textAlign} text-mobile`}
+                variant="display-default-xs"
+                onBackground="neutral-weak"
+              >
+                {person.role}
+              </Text>
+            </RevealFx>
             {social.length > 0 && (
-              <Flex className={styles.blockAlign} paddingTop="20" paddingBottom="8" gap="8" wrap horizontal="center" fitWidth data-border="rounded">
-                {social.map(
-                  (item) =>
-                    item.link && (
-                        <React.Fragment key={item.name}>
-                            <Button
-                                className="s-flex-hide mobile-reduce-animations"
-                                key={item.name}
-                                href={item.link}
-                                prefixIcon={item.icon}
-                                label={item.name}
-                                size="s"
-                                weight="default"
-                                variant="secondary"
-                            />
-                            <IconButton
-                                className="s-flex-show mobile-reduce-animations"
-                                size="l"
-                                key={`${item.name}-icon`}
-                                href={item.link}
-                                icon={item.icon}
-                                variant="secondary"
-                            />
-                        </React.Fragment>
-                    ),
-                )}
-              </Flex>
+              <RevealFx translateY="16" delay={0.6} fillWidth horizontal="start">
+                <Flex className={styles.blockAlign} paddingTop="20" paddingBottom="8" gap="8" wrap horizontal="center" fitWidth data-border="rounded">
+                  {social.map(
+                    (item) =>
+                      item.link && (
+                          <React.Fragment key={item.name}>
+                              <Button
+                                  className="s-flex-hide mobile-reduce-animations"
+                                  key={item.name}
+                                  href={item.link}
+                                  prefixIcon={item.icon}
+                                  label={item.name}
+                                  size="s"
+                                  weight="default"
+                                  variant="secondary"
+                              />
+                              <IconButton
+                                  className="s-flex-show mobile-reduce-animations"
+                                  size="l"
+                                  key={`${item.name}-icon`}
+                                  href={item.link}
+                                  icon={item.icon}
+                                  variant="secondary"
+                              />
+                          </React.Fragment>
+                      ),
+                  )}
+                </Flex>
+              </RevealFx>
             )}
           </Column>
-
+          
           {about.intro.display && (
-            <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="xl" className="mobile-gap text-mobile">
-              {about.intro.description}
+            <Column
+              id={about.intro.title}
+              fillWidth
+              marginBottom="32"
+              className="mobile-gap"
+            >
+              <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
+                <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-l">
+                  {about.intro.title}
+                </Heading>
+              </RevealFx>
+              <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
+                <Text
+                  className={`${styles.textAlign} text-mobile`}
+                  variant="display-default-s"
+                  onBackground="neutral-weak"
+                >
+                  {about.intro.description}
+                </Text>
+              </RevealFx>
             </Column>
           )}
 
           {about.work.display && (
-            <>
-              <Heading as="h2" id={about.work.title} variant="display-strong-s" marginBottom="m" className="mobile-reduce-animations">
-                {about.work.title}
-              </Heading>
-              <Column fillWidth gap="l" marginBottom="40" className="mobile-gap">
-                {about.work.experiences.map((experience, index) => (
-                  <Column key={`${experience.company}-${experience.role}-${index}`} fillWidth className="mobile-padding">
-                    <Flex fillWidth horizontal="space-between" vertical="end" marginBottom="4" style={{ flexDirection: window.innerWidth <= 768 ? "column" : "row", alignItems: window.innerWidth <= 768 ? "flex-start" : "flex-end" }}>
-                      <Text id={experience.company} variant="heading-strong-l" className="text-mobile">
-                        {experience.company}
-                      </Text>
-                      <Text variant="heading-default-xs" onBackground="neutral-weak" style={{ marginTop: window.innerWidth <= 768 ? "8px" : "0" }}>
-                        {experience.timeframe}
-                      </Text>
-                    </Flex>
-                    <Text variant="body-default-s" onBackground="brand-weak" marginBottom="m" className="text-mobile">
-                      {experience.role}
-                    </Text>
-                    <Column as="ul" gap="16" className="mobile-gap">
-                      {experience.achievements.map((achievement: JSX.Element, index: number) => (
-                        <Text
-                          as="li"
-                          variant="body-default-m"
-                          key={`${experience.company}-${index}`}
-                          className="text-mobile"
-                        >
-                          {achievement}
+            <Column
+              id={about.work.title}
+              fillWidth
+              marginBottom="32"
+              className="mobile-gap"
+            >
+              <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
+                <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-l">
+                  {about.work.title}
+                </Heading>
+              </RevealFx>
+              <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
+                <Column gap="l">
+                  {about.work.experiences.map((item, index) => (
+                    <Flex
+                      key={index}
+                      fillWidth
+                      gap="l"
+                      padding="m"
+                      style={{
+                        border: "1px solid var(--neutral-alpha-weak)",
+                        borderRadius: "12px",
+                        backgroundColor: "var(--surface-background)",
+                        flexDirection: isMobile ? "column" : "row",
+                        alignItems: isMobile ? "center" : "flex-start"
+                      }}
+                    >
+                      <Column flex={1} gap="s" style={{ width: isMobile ? "100%" : "auto" }}>
+                        <Heading as="h3" variant="heading-strong-m" className="text-mobile">
+                          {item.role}
+                        </Heading>
+                        <Text variant="body-default-m" onBackground="neutral-weak" className="text-mobile">
+                          {item.company}
                         </Text>
-                      ))}
-                    </Column>
-                    {experience.images.length > 0 && (
-                      <Flex fillWidth paddingTop="m" paddingLeft="40" gap="12" wrap style={{ paddingLeft: window.innerWidth <= 768 ? "0" : "40px" }}>
-                        {experience.images.map((image, index) => (
-                          <Flex
-                            key={index}
-                            border="neutral-medium"
-                            radius="m"
-                            //@ts-ignore
-                            minWidth={image.width}
-                            //@ts-ignore
-                            height={image.height}
-                          >
-                            <Media
-                              enlarge
-                              radius="m"
-                              //@ts-ignore
-                              sizes={image.width.toString()}
-                              //@ts-ignore
-                              alt={image.alt}
-                              //@ts-ignore
-                              src={image.src}
-                            />
-                          </Flex>
-                        ))}
-                      </Flex>
-                    )}
-                  </Column>
-                ))}
-              </Column>
-            </>
+                        <Text variant="body-default-s" onBackground="neutral-weak" className="text-mobile">
+                          {item.timeframe}
+                        </Text>
+                        <Column gap="s" style={{ marginTop: "8px" }}>
+                          {item.achievements.map((achievement, achievementIndex) => (
+                            <Text
+                              key={achievementIndex}
+                              variant="body-default-s"
+                              onBackground="neutral-weak"
+                              className="text-mobile"
+                              style={{
+                                lineHeight: "1.5",
+                                color: "var(--neutral-on-background-weak)"
+                              }}
+                            >
+                              {achievement}
+                            </Text>
+                          ))}
+                        </Column>
+                      </Column>
+                    </Flex>
+                  ))}
+                </Column>
+              </RevealFx>
+            </Column>
           )}
 
           {about.studies.display && (
-            <>
-              <Heading as="h2" id={about.studies.title} variant="display-strong-s" marginBottom="m" className="mobile-reduce-animations">
-                {about.studies.title}
-              </Heading>
-              <Column fillWidth gap="l" marginBottom="40" className="mobile-gap">
-                {about.studies.institutions.map((institution, index) => (
-                  <Column key={`${institution.name}-${index}`} fillWidth gap="4" className="mobile-padding">
-                    <Text id={institution.name} variant="heading-strong-l" className="text-mobile">
-                      {institution.name}
-                    </Text>
-                    <Text variant="heading-default-xs" onBackground="neutral-weak" className="text-mobile">
-                      {institution.description}
-                    </Text>
-                  </Column>
-                ))}
-              </Column>
-            </>
+            <Column
+              id={about.studies.title}
+              fillWidth
+              marginBottom="32"
+              className="mobile-gap"
+            >
+              <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
+                <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-l">
+                  {about.studies.title}
+                </Heading>
+              </RevealFx>
+              <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
+                <Column gap="l">
+                  {about.studies.institutions.map((item, index) => (
+                    <Flex
+                      key={index}
+                      fillWidth
+                      gap="l"
+                      padding="m"
+                      style={{
+                        border: "1px solid var(--neutral-alpha-weak)",
+                        borderRadius: "12px",
+                        backgroundColor: "var(--surface-background)",
+                        flexDirection: isMobile ? "column" : "row",
+                        alignItems: isMobile ? "center" : "flex-start"
+                      }}
+                    >
+                      <Column flex={1} gap="s" style={{ width: isMobile ? "100%" : "auto" }}>
+                        <Heading as="h3" variant="heading-strong-m" className="text-mobile">
+                          {item.name}
+                        </Heading>
+                        <Text variant="body-default-s" onBackground="neutral-weak" className="text-mobile">
+                          {item.description}
+                        </Text>
+                      </Column>
+                    </Flex>
+                  ))}
+                </Column>
+              </RevealFx>
+            </Column>
           )}
 
           {about.technical.display && (
-            <>
-              <Heading
-                as="h2"
-                id={about.technical.title}
-                variant="display-strong-s"
-                marginBottom="40"
-                className="mobile-reduce-animations"
-              >
-                {about.technical.title}
-              </Heading>
-              <Column fillWidth gap="l" className="mobile-gap">
-                {about.technical.skills.map((skill, index) => (
-                  <Column key={`${skill}-${index}`} fillWidth gap="4" className="mobile-padding">
-                    <Text variant="heading-strong-l" className="text-mobile">{skill.title}</Text>
-                    <Text variant="body-default-m" onBackground="neutral-weak" className="text-mobile">
-                      {skill.description}
-                    </Text>
-                    {skill.images && skill.images.length > 0 && (
-                      <Flex fillWidth paddingTop="m" gap="12" wrap>
-                        {skill.images.map((image, index) => (
-                          <Flex
-                            key={index}
-                            border="neutral-medium"
-                            radius="m"
-                            //@ts-ignore
-                            minWidth={image.width}
-                            //@ts-ignore
-                            height={image.height}
-                          >
-                            <Media
-                              enlarge
-                              radius="m"
-                              //@ts-ignore
-                              sizes={image.width.toString()}
-                              //@ts-ignore
-                              alt={image.alt}
-                              //@ts-ignore
-                              src={image.src}
-                            />
-                          </Flex>
-                        ))}
-                      </Flex>
-                    )}
-                  </Column>
-                ))}
-              </Column>
-            </>
+            <Column
+              id={about.technical.title}
+              fillWidth
+              marginBottom="32"
+              className="mobile-gap"
+            >
+              <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
+                <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-l">
+                  {about.technical.title}
+                </Heading>
+              </RevealFx>
+              <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
+                <Column gap="l">
+                  {about.technical.skills.map((category, index) => (
+                    <Column key={index} gap="m">
+                      <Heading as="h3" variant="heading-strong-m" className="text-mobile">
+                        {category.title}
+                      </Heading>
+                      <Text variant="body-default-s" onBackground="neutral-weak" className="text-mobile">
+                        {category.description}
+                      </Text>
+                    </Column>
+                  ))}
+                </Column>
+              </RevealFx>
+            </Column>
           )}
         </Column>
       </Flex>

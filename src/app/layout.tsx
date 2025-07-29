@@ -149,14 +149,6 @@ export default async function RootLayout({
               horizontal="center"
               flex={1}
               className="mobile-padding"
-              style={{
-                paddingLeft: 'var(--static-space-16)',
-                paddingRight: 'var(--static-space-16)',
-                '@media (max-width: 768px)': {
-                  paddingLeft: 'var(--static-space-12)',
-                  paddingRight: 'var(--static-space-12)',
-                }
-              }}
             >
               <Flex horizontal="center" fillWidth minHeight="0">
                 <RouteGuard>

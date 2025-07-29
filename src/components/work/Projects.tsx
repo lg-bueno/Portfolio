@@ -1,8 +1,8 @@
 "use client";
 
 import { Column, Flex, Heading, Text, Media } from "@once-ui-system/core";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Post {
   slug: string;
@@ -12,15 +12,38 @@ interface Post {
     summary: string;
     images: string[];
   };
-  content: string;
 }
 
-interface ProjectsProps {
-  range?: [number, number?];
+// Hook para detectar tamanho da tela de forma segura
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    height: typeof window !== 'undefined' ? window.innerHeight : 768,
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  return windowSize;
 }
 
-export function Projects({ range }: ProjectsProps) {
+export default function Projects() {
   const router = useRouter();
+  const { width } = useWindowSize();
+  const isMobile = width <= 768;
+  
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,11 +67,6 @@ export function Projects({ range }: ProjectsProps) {
     fetchPosts();
   }, []);
 
-  const displayedProjects = range
-    ? posts.slice(range[0] - 1, range[1] ?? posts.length)
-    : posts;
-
-  // Função para formatar a data
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = { 
@@ -65,15 +83,23 @@ export function Projects({ range }: ProjectsProps) {
 
   if (loading) {
     return (
-      <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center" className="mobile-padding">
-        <Text className="text-mobile">Carregando write-ups...</Text>
+      <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
+        <Text align="center" className="text-mobile">Carregando projetos...</Text>
+      </Column>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
+        <Text align="center" className="text-mobile">Nenhum projeto encontrado.</Text>
       </Column>
     );
   }
 
   return (
     <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center" className="mobile-padding">
-      {displayedProjects.map((post, index) => (
+      {posts.map((post, index) => (
         <Flex
           key={post.slug}
           fillWidth
@@ -83,15 +109,15 @@ export function Projects({ range }: ProjectsProps) {
           style={{
             borderBottom: "1px solid var(--neutral-alpha-weak)",
             cursor: "pointer",
-            flexDirection: window.innerWidth <= 768 ? "column" : "row",
-            alignItems: window.innerWidth <= 768 ? "center" : "flex-start",
-            textAlign: window.innerWidth <= 768 ? "center" : "left",
-            paddingBottom: window.innerWidth <= 768 ? "24px" : "16px",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: isMobile ? "center" : "flex-start",
+            textAlign: isMobile ? "center" : "left",
+            paddingBottom: isMobile ? "24px" : "16px",
           }}
           onClick={() => handleClick(post.slug)}
         >
           {/* Conteúdo Textual */}
-          <Column flex={1} gap="s" style={{ width: window.innerWidth <= 768 ? "100%" : "auto" }}>
+          <Column flex={1} gap="s" style={{ width: isMobile ? "100%" : "auto" }}>
             <Heading 
               as="h2" 
               variant="heading-strong-l" 
@@ -118,33 +144,24 @@ export function Projects({ range }: ProjectsProps) {
               {post.metadata.summary}
             </Text>
             
-            <Flex gap="s" vertical="center" style={{ marginTop: "8px", justifyContent: window.innerWidth <= 768 ? "center" : "flex-start" }}>
+            <Flex gap="s" vertical="center" style={{ marginTop: "8px", justifyContent: isMobile ? "center" : "flex-start" }}>
               <Text 
-                variant="body-default-s" 
+                variant="body-default-xs" 
                 onBackground="neutral-weak"
                 style={{ 
                   color: "var(--neutral-on-background-weak)",
-                  fontSize: "14px"
+                  fontSize: "12px"
                 }}
               >
-                Added {formatDate(post.metadata.publishedAt)}
+                {formatDate(post.metadata.publishedAt)}
               </Text>
+              <Text variant="body-default-xs" onBackground="neutral-weak">•</Text>
               <Text 
-                variant="body-default-s" 
+                variant="body-default-xs" 
                 onBackground="neutral-weak"
                 style={{ 
                   color: "var(--neutral-on-background-weak)",
-                  fontSize: "14px"
-                }}
-              >
-                •
-              </Text>
-              <Text 
-                variant="body-default-s" 
-                onBackground="neutral-weak"
-                style={{ 
-                  color: "var(--neutral-on-background-weak)",
-                  fontSize: "14px"
+                  fontSize: "12px"
                 }}
               >
                 5 min read
@@ -155,12 +172,12 @@ export function Projects({ range }: ProjectsProps) {
           {/* Imagem de Capa */}
           <Flex 
             style={{ 
-              width: window.innerWidth <= 768 ? "100%" : "200px", 
-              height: window.innerWidth <= 768 ? "180px" : "120px",
+              width: isMobile ? "100%" : "200px", 
+              height: isMobile ? "180px" : "120px",
               borderRadius: "8px",
               overflow: "hidden",
               flexShrink: 0,
-              marginTop: window.innerWidth <= 768 ? "16px" : "0"
+              marginTop: isMobile ? "16px" : "0"
             }}
           >
             <Media
