@@ -8,6 +8,7 @@ export { default as LocationDisplay } from "./LocationDisplay";
 export { HeadingLink } from "./HeadingLink";
 export { ProjectCard } from "./ProjectCard";
 export { Providers } from "./Providers";
+export { CustomMDX } from "./mdx";
 export { CustomMDX as mdx } from "./mdx";
 
 // Blog components
