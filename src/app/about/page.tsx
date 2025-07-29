@@ -51,7 +51,7 @@ export default function About() {
     },
   ];
   return (
-    <Column maxWidth="m">
+    <Column maxWidth="m" className="mobile-padding">
       <Schema
         as="webPage"
         baseURL={baseURL}
@@ -77,10 +77,10 @@ export default function About() {
           <TableOfContents structure={structure} about={about} />
         </Column>
       )}
-      <Flex fillWidth mobileDirection="column" horizontal="center">
+      <Flex fillWidth mobileDirection="column" horizontal="center" className="mobile-gap">
         {about.avatar.display && (
           <Column
-            className={styles.avatar}
+            className={`${styles.avatar} mobile-padding`}
             position="sticky"
             minWidth="160"
             paddingX="l"
@@ -88,14 +88,18 @@ export default function About() {
             gap="m"
             flex={3}
             horizontal="center"
+            style={{
+              width: window.innerWidth <= 768 ? "100%" : "auto",
+              position: window.innerWidth <= 768 ? "static" : "sticky"
+            }}
           >
             <Avatar src={person.avatar} size="xl" />
-            <Flex gap="8" vertical="center">
+            <Flex gap="8" vertical="center" className="text-mobile">
               <Icon onBackground="accent-weak" name="globe" />
               Goiânia, Brasil
             </Flex>
             {person.languages.length > 0 && (
-              <Flex wrap gap="8">
+              <Flex wrap gap="8" horizontal="center">
                 {person.languages.map((language, index) => (
                   <Tag key={language} size="l">
                     {language}
@@ -105,13 +109,14 @@ export default function About() {
             )}
           </Column>
         )}
-        <Column className={styles.blockAlign} flex={9} maxWidth={40}>
+        <Column className={`${styles.blockAlign} mobile-padding`} flex={9} maxWidth={40} style={{ width: window.innerWidth <= 768 ? "100%" : "auto" }}>
           <Column
             id={about.intro.title}
             fillWidth
             minHeight="160"
             vertical="center"
             marginBottom="32"
+            className="mobile-gap"
           >
             {about.calendar.display && (
               <Flex
@@ -138,11 +143,11 @@ export default function About() {
                 />
               </Flex>
             )}
-            <Heading className={styles.textAlign} variant="display-strong-xl">
+            <Heading className={`${styles.textAlign} mobile-reduce-animations`} variant="display-strong-xl">
               {person.name}
             </Heading>
             <Text
-              className={styles.textAlign}
+              className={`${styles.textAlign} text-mobile`}
               variant="display-default-xs"
               onBackground="neutral-weak"
             >
@@ -155,7 +160,7 @@ export default function About() {
                     item.link && (
                         <React.Fragment key={item.name}>
                             <Button
-                                className="s-flex-hide"
+                                className="s-flex-hide mobile-reduce-animations"
                                 key={item.name}
                                 href={item.link}
                                 prefixIcon={item.icon}
@@ -165,7 +170,7 @@ export default function About() {
                                 variant="secondary"
                             />
                             <IconButton
-                                className="s-flex-show"
+                                className="s-flex-show mobile-reduce-animations"
                                 size="l"
                                 key={`${item.name}-icon`}
                                 href={item.link}
@@ -180,43 +185,44 @@ export default function About() {
           </Column>
 
           {about.intro.display && (
-            <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="xl">
+            <Column textVariant="body-default-l" fillWidth gap="m" marginBottom="xl" className="mobile-gap text-mobile">
               {about.intro.description}
             </Column>
           )}
 
           {about.work.display && (
             <>
-              <Heading as="h2" id={about.work.title} variant="display-strong-s" marginBottom="m">
+              <Heading as="h2" id={about.work.title} variant="display-strong-s" marginBottom="m" className="mobile-reduce-animations">
                 {about.work.title}
               </Heading>
-              <Column fillWidth gap="l" marginBottom="40">
+              <Column fillWidth gap="l" marginBottom="40" className="mobile-gap">
                 {about.work.experiences.map((experience, index) => (
-                  <Column key={`${experience.company}-${experience.role}-${index}`} fillWidth>
-                    <Flex fillWidth horizontal="space-between" vertical="end" marginBottom="4">
-                      <Text id={experience.company} variant="heading-strong-l">
+                  <Column key={`${experience.company}-${experience.role}-${index}`} fillWidth className="mobile-padding">
+                    <Flex fillWidth horizontal="space-between" vertical="end" marginBottom="4" style={{ flexDirection: window.innerWidth <= 768 ? "column" : "row", alignItems: window.innerWidth <= 768 ? "flex-start" : "flex-end" }}>
+                      <Text id={experience.company} variant="heading-strong-l" className="text-mobile">
                         {experience.company}
                       </Text>
-                      <Text variant="heading-default-xs" onBackground="neutral-weak">
+                      <Text variant="heading-default-xs" onBackground="neutral-weak" style={{ marginTop: window.innerWidth <= 768 ? "8px" : "0" }}>
                         {experience.timeframe}
                       </Text>
                     </Flex>
-                    <Text variant="body-default-s" onBackground="brand-weak" marginBottom="m">
+                    <Text variant="body-default-s" onBackground="brand-weak" marginBottom="m" className="text-mobile">
                       {experience.role}
                     </Text>
-                    <Column as="ul" gap="16">
+                    <Column as="ul" gap="16" className="mobile-gap">
                       {experience.achievements.map((achievement: JSX.Element, index: number) => (
                         <Text
                           as="li"
                           variant="body-default-m"
                           key={`${experience.company}-${index}`}
+                          className="text-mobile"
                         >
                           {achievement}
                         </Text>
                       ))}
                     </Column>
                     {experience.images.length > 0 && (
-                      <Flex fillWidth paddingTop="m" paddingLeft="40" gap="12" wrap>
+                      <Flex fillWidth paddingTop="m" paddingLeft="40" gap="12" wrap style={{ paddingLeft: window.innerWidth <= 768 ? "0" : "40px" }}>
                         {experience.images.map((image, index) => (
                           <Flex
                             key={index}
@@ -249,16 +255,16 @@ export default function About() {
 
           {about.studies.display && (
             <>
-              <Heading as="h2" id={about.studies.title} variant="display-strong-s" marginBottom="m">
+              <Heading as="h2" id={about.studies.title} variant="display-strong-s" marginBottom="m" className="mobile-reduce-animations">
                 {about.studies.title}
               </Heading>
-              <Column fillWidth gap="l" marginBottom="40">
+              <Column fillWidth gap="l" marginBottom="40" className="mobile-gap">
                 {about.studies.institutions.map((institution, index) => (
-                  <Column key={`${institution.name}-${index}`} fillWidth gap="4">
-                    <Text id={institution.name} variant="heading-strong-l">
+                  <Column key={`${institution.name}-${index}`} fillWidth gap="4" className="mobile-padding">
+                    <Text id={institution.name} variant="heading-strong-l" className="text-mobile">
                       {institution.name}
                     </Text>
-                    <Text variant="heading-default-xs" onBackground="neutral-weak">
+                    <Text variant="heading-default-xs" onBackground="neutral-weak" className="text-mobile">
                       {institution.description}
                     </Text>
                   </Column>
@@ -274,14 +280,15 @@ export default function About() {
                 id={about.technical.title}
                 variant="display-strong-s"
                 marginBottom="40"
+                className="mobile-reduce-animations"
               >
                 {about.technical.title}
               </Heading>
-              <Column fillWidth gap="l">
+              <Column fillWidth gap="l" className="mobile-gap">
                 {about.technical.skills.map((skill, index) => (
-                  <Column key={`${skill}-${index}`} fillWidth gap="4">
-                    <Text variant="heading-strong-l">{skill.title}</Text>
-                    <Text variant="body-default-m" onBackground="neutral-weak">
+                  <Column key={`${skill}-${index}`} fillWidth gap="4" className="mobile-padding">
+                    <Text variant="heading-strong-l" className="text-mobile">{skill.title}</Text>
+                    <Text variant="body-default-m" onBackground="neutral-weak" className="text-mobile">
                       {skill.description}
                     </Text>
                     {skill.images && skill.images.length > 0 && (

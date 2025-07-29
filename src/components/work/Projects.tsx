@@ -65,28 +65,33 @@ export function Projects({ range }: ProjectsProps) {
 
   if (loading) {
     return (
-      <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center">
-        <Text>Carregando write-ups...</Text>
+      <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center" className="mobile-padding">
+        <Text className="text-mobile">Carregando write-ups...</Text>
       </Column>
     );
   }
 
   return (
-    <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center">
+    <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center" className="mobile-padding">
       {displayedProjects.map((post, index) => (
         <Flex
           key={post.slug}
           fillWidth
           gap="l"
           paddingY="m"
+          className="mobile-reduce-animations"
           style={{
             borderBottom: "1px solid var(--neutral-alpha-weak)",
             cursor: "pointer",
+            flexDirection: window.innerWidth <= 768 ? "column" : "row",
+            alignItems: window.innerWidth <= 768 ? "center" : "flex-start",
+            textAlign: window.innerWidth <= 768 ? "center" : "left",
+            paddingBottom: window.innerWidth <= 768 ? "24px" : "16px",
           }}
           onClick={() => handleClick(post.slug)}
         >
           {/* Conteúdo Textual */}
-          <Column flex={1} gap="s">
+          <Column flex={1} gap="s" style={{ width: window.innerWidth <= 768 ? "100%" : "auto" }}>
             <Heading 
               as="h2" 
               variant="heading-strong-l" 
@@ -95,6 +100,7 @@ export function Projects({ range }: ProjectsProps) {
                 color: "var(--neutral-on-background-strong)",
                 lineHeight: "1.3"
               }}
+              className="text-mobile"
             >
               {post.metadata.title}
             </Heading>
@@ -107,11 +113,12 @@ export function Projects({ range }: ProjectsProps) {
                 lineHeight: "1.5",
                 color: "var(--neutral-on-background-weak)"
               }}
+              className="text-mobile"
             >
               {post.metadata.summary}
             </Text>
             
-            <Flex gap="s" vertical="center" style={{ marginTop: "8px" }}>
+            <Flex gap="s" vertical="center" style={{ marginTop: "8px", justifyContent: window.innerWidth <= 768 ? "center" : "flex-start" }}>
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
@@ -148,11 +155,12 @@ export function Projects({ range }: ProjectsProps) {
           {/* Imagem de Capa */}
           <Flex 
             style={{ 
-              width: "200px", 
-              height: "120px",
+              width: window.innerWidth <= 768 ? "100%" : "200px", 
+              height: window.innerWidth <= 768 ? "180px" : "120px",
               borderRadius: "8px",
               overflow: "hidden",
-              flexShrink: 0
+              flexShrink: 0,
+              marginTop: window.innerWidth <= 768 ? "16px" : "0"
             }}
           >
             <Media

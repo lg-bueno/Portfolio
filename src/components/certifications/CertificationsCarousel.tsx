@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Column, Flex, Heading, Text, Media, Button } from "@once-ui-system/core";
+import { getImageUrl } from "@/utils/imageHash";
 
 interface Certification {
   id: string;
   title: string;
   issuer: string;
-  image: string;
+  image: string; // Agora é um hash que será usado na API
   description: string;
   date: string;
   category: string;
@@ -20,7 +21,7 @@ const certifications: Certification[] = [
     id: "bitdefender-business",
     title: "Bitdefender Business",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_business.png",
+    image: "bd_business",
     description: "Certificação em segurança de endpoint para ambientes empresariais.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -30,7 +31,7 @@ const certifications: Certification[] = [
     id: "bitdefender-encryption",
     title: "Bitdefender Encryption",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_encryption.png",
+    image: "bd_encryption",
     description: "Certificação em criptografia de disco completo para proteção de dados corporativos.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -40,18 +41,8 @@ const certifications: Certification[] = [
     id: "bitdefender-comercial",
     title: "Bitdefender Comercial",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_comercial.png",
+    image: "bd_comercial",
     description: "Certificação em fundamentos comerciais das soluções de segurança.",
-    date: "2025",
-    category: "Endpoint & EDR",
-    subcategory: "Bitdefender"
-  },
-  {
-    id: "bitdefender-business",
-    title: "Bitdefender Business",
-    issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_business.png",
-    description: "Certificação em segurança de endpoint para pequenas e médias empresas.",
     date: "2025",
     category: "Endpoint & EDR",
     subcategory: "Bitdefender"
@@ -60,7 +51,7 @@ const certifications: Certification[] = [
     id: "bitdefender-cybersecurity-essentials",
     title: "Bitdefender Cybersecurity Essentials",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_cybersecurity_essentials.png",
+    image: "bd_cybersecurity_essentials",
     description: "Certificação em fundamentos essenciais de cibersegurança e proteção da informação.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -70,7 +61,7 @@ const certifications: Certification[] = [
     id: "bitdefender-premium",
     title: "Bitdefender Premium",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_premium.png",
+    image: "bd_premium",
     description: "Certificação em segurança de endpoint com recursos premium, incluindo análise de risco e proteção avançada.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -80,7 +71,7 @@ const certifications: Certification[] = [
     id: "bitdefender-patch",
     title: "Bitdefender Patch",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_patch.png",
+    image: "bd_patch",
     description: "Certificação em gerenciamento automatizado de patches e atualizações de segurança.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -90,7 +81,7 @@ const certifications: Certification[] = [
     id: "bitdefender-partner",
     title: "Bitdefender Partner",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_partner.png",
+    image: "bd_partner",
     description: "Certificação técnica e comercial para parceiros da plataforma GravityZone.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -100,7 +91,7 @@ const certifications: Certification[] = [
     id: "bitdefender-enterprise",
     title: "Bitdefender Enterprise",
     issuer: "Bitdefender",
-    image: "/images/certifications/bitdefender/certificado_bitdefender_enterprise.png",
+    image: "bd_enterprise",
     description: "Certificação em segurança de endpoint para ambientes empresariais com recursos avançados de detecção e resposta.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -112,7 +103,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-100",
     title: "FALCON 100: Falcon Platform Architecture Overview ",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_100.png",
+    image: "cs_100",
     description: "Certificação em arquitetura geral da plataforma Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -122,7 +113,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-101",
     title: "FALCON 101: Falcon Platform Essentials",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_101.png",
+    image: "cs_101",
     description: "Certificação nos conceitos essenciais da plataforma Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -132,7 +123,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-102",
     title: "FALCON 102: Falcon Platform Onboarding Configuration",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_102.png",
+    image: "cs_102",
     description: "Certificação em configuração de onboarding da plataforma Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -142,7 +133,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-104",
     title: "FALCON 104: Getting Started with the Endpoint Security Module",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_104.png",
+    image: "cs_104",
     description: "Certificação introdutória em segurança de endpoint com o módulo Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -152,7 +143,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-105",
     title: "FALCON 105: Sensor Installation, Configuration and Troubleshooting",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_105.png",
+    image: "cs_105",
     description: "Certificação em instalação, configuração e troubleshooting de sensores Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -162,7 +153,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-106",
     title: "FALCON 106: Customizing Dashboards in Falcon",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_106.png",
+    image: "cs_106",
     description: "Certificação em personalização de dashboards na plataforma Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -172,7 +163,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-107",
     title: "FALCON 107: Falcon Firewall Management Fundamentals",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_107.png",
+    image: "cs_107",
     description: "Certificação nos fundamentos de gerenciamento de firewall na plataforma Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -182,7 +173,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-109",
     title: "FALCON 109: Using MITRE ATT&CK and Falcon Detection Methods to Understand Security Risk",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_109.png",
+    image: "cs_109",
     description: "Certificação em uso da MITRE ATT&CK e métodos de detecção da Falcon para análise de risco.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -192,7 +183,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-114",
     title: "FALCON 114: Falcon Fusion SOAR Fundamentals",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_114.png",
+    image: "cs_114",
     description: "Certificação nos fundamentos do Falcon Fusion SOAR.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -202,7 +193,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-115",
     title: "FALCON 115: Create a Falcon Fusion SOAR Workflow",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_115.png",
+    image: "cs_115",
     description: "Certificação em criação de workflows automatizados com Falcon Fusion SOAR.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -212,7 +203,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-120",
     title: "FALCON 120: Investigation Fundamentals",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_120.png",
+    image: "cs_120",
     description: "Certificação nos fundamentos de investigação de incidentes em ambientes corporativos.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -222,7 +213,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-121",
     title: "ITSEC 121: Vulnerability Management Fundamentals",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_121.png",
+    image: "cs_121",
     description: "Certificação nos fundamentos da gestão de vulnerabilidades em ambientes corporativos.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -232,7 +223,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-122",
     title: "ITSEC 122: Asset Management Fundamentals",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_122.png",
+    image: "cs_122",
     description: "Certificação nos fundamentos de gestão de ativos de TI e segurança.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -242,7 +233,7 @@ const certifications: Certification[] = [
     id: "crowdstrike-160",
     title: "FALCON 160: Falcon for Mobile",
     issuer: "CrowdStrike",
-    image: "/images/certifications/crowdstrike/CrowdStrike_160.png",
+    image: "cs_160",
     description: "Certificação em proteção de dispositivos móveis com a solução Falcon.",
     date: "2025",
     category: "Endpoint & EDR",
@@ -251,221 +242,123 @@ const certifications: Certification[] = [
   
   // PENETRATION TESTING - HACK THE BOX
   {
-    id: "htb-pro-hacker",
-    title: "Hack The Box - Pro Hacker",
+    id: "htb-academician",
+    title: "Hack The Box - Academician",
     issuer: "Hack The Box",
-    image: "/images/certifications/htb-pro-hacker.png",
-    description: "Badge de Pro Hacker com mais de 50 máquinas resolvidas",
-    date: "2024",
+    image: "htb_academician",
+    description: "Introduction to Academy module completed",
+    date: "2025",
     category: "Penetration Testing",
     subcategory: "Hack The Box"
   },
   {
-    id: "htb-oscp-prep",
-    title: "Hack The Box - OSCP Preparation",
+    id: "htb-your-request-is-my-demand",
+    title: "Hack The Box - Your Request Is My Demand",
     issuer: "Hack The Box",
-    image: "/images/certifications/htb-oscp-prep.png",
-    description: "Preparação específica para certificação OSCP",
-    date: "2024",
-    category: "Penetration Testing",
-    subcategory: "Hack The Box"
-  },
-  {
-    id: "htb-advanced",
-    title: "Hack The Box - Advanced Penetration Testing",
-    issuer: "Hack The Box",
-    image: "/images/certifications/htb-advanced.png",
-    description: "Técnicas avançadas de penetration testing",
-    date: "2024",
+    image: "htb_your_request",
+    description: "Web Requests module completed",
+    date: "2025",
     category: "Penetration Testing",
     subcategory: "Hack The Box"
   },
 
   // TRYHACKME
   {
-    id: "thm-offensive",
-    title: "TryHackMe - Offensive Security",
+    id: "thm-pre-security",
+    title: "TryHackMe - Pre-Security",
     issuer: "TryHackMe",
-    image: "/images/certifications/thm-offensive.png",
-    description: "Certificação em técnicas ofensivas e análise de vulnerabilidades",
+    image: "thm_pre_security",
+    description: "Completing the 'Pre-Security' learning path",
     date: "2024",
     category: "Penetration Testing",
     subcategory: "TryHackMe"
   },
   {
-    id: "thm-web-pentest",
-    title: "TryHackMe - Web Application Penetration Testing",
+    id: "thm-networking-nerd",
+    title: "TryHackMe - Networking Nerd",
     issuer: "TryHackMe",
-    image: "/images/certifications/thm-web-pentest.png",
-    description: "Especialização em teste de penetração em aplicações web",
+    image: "thm_networking_nerd",
+    description: "Completing the 'Network Fundamentals' module",
     date: "2024",
     category: "Penetration Testing",
     subcategory: "TryHackMe"
   },
   {
-    id: "thm-network-pentest",
-    title: "TryHackMe - Network Penetration Testing",
+    id: "thm-world-wide-web",
+    title: "TryHackMe - World Wide Web",
     issuer: "TryHackMe",
-    image: "/images/certifications/thm-network-pentest.png",
-    description: "Teste de penetração em redes e infraestrutura",
+    image: "thm_world_wide_web",
+    description: "Completing the 'How The Web Works' module",
+    date: "2024",
+    category: "Penetration Testing",
+    subcategory: "TryHackMe"
+  },
+  {
+    id: "thm-webbed",
+    title: "TryHackMe - Webbed",
+    issuer: "TryHackMe",
+    image: "thm_webbed",
+    description: "Understands how the world wide web works",
+    date: "2024",
+    category: "Penetration Testing",
+    subcategory: "TryHackMe"
+  },
+  {
+    id: "thm-cat-linux",
+    title: "TryHackMe - cat linux.txt",
+    issuer: "TryHackMe",
+    image: "thm_cat_linux",
+    description: "Being competent in Linux",
     date: "2024",
     category: "Penetration Testing",
     subcategory: "TryHackMe"
   },
 
-  // OFFENSIVE SECURITY
+  //DESEC
   {
-    id: "oscp",
-    title: "Offensive Security Certified Professional",
-    issuer: "Offensive Security",
-    image: "/images/certifications/oscp-cert.png",
-    description: "Certificação prática em penetration testing e exploração",
+    id: "desec-network-analyst",
+    title: "DESEC - Network Analyst",
+    issuer: "DESEC",
+    image: "desec_network_analyst",
+    description: "Completing the 'Network Analyst' module",
     date: "2024",
     category: "Penetration Testing",
-    subcategory: "Offensive Security"
+    subcategory: "DESEC"
   },
   {
-    id: "osce",
-    title: "Offensive Security Certified Expert",
-    issuer: "Offensive Security",
-    image: "/images/certifications/osce-cert.png",
-    description: "Certificação avançada em técnicas de exploração",
+    id: "desec-pentest-fundamentals",
+    title: "DESEC - Pentest Fundamentals",
+    issuer: "DESEC",
+    image: "desec_pentest_fundamentals",
+    description: "Completing the 'Pentest Fundamentals' module",
     date: "2024",
     category: "Penetration Testing",
-    subcategory: "Offensive Security"
+    subcategory: "DESEC"
   },
 
-  // EC-COUNCIL
-  {
-    id: "ceh",
-    title: "Certified Ethical Hacker",
-    issuer: "EC-Council",
-    image: "/images/certifications/ceh-cert.png",
-    description: "Certificação em hacking ético e técnicas de teste de invasão",
-    date: "2023",
-    category: "Penetration Testing",
-    subcategory: "EC-Council"
-  },
-  {
-    id: "cpt",
-    title: "Certified Penetration Testing Professional",
-    issuer: "EC-Council",
-    image: "/images/certifications/cpt-cert.png",
-    description: "Profissional certificado em teste de penetração",
-    date: "2024",
-    category: "Penetration Testing",
-    subcategory: "EC-Council"
-  },
-
-  // NETWORK & CLOUD SECURITY - FORTINET
-  {
-    id: "fortinet-nse4",
-    title: "Fortinet NSE 4 - Network Security Professional",
-    issuer: "Fortinet",
-    image: "/images/certifications/fortinet-nse4.png",
-    description: "Configuração e administração de firewalls Fortinet",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "Fortinet"
-  },
-  {
-    id: "fortinet-nse7",
-    title: "Fortinet NSE 7 - Network Security Architect",
-    issuer: "Fortinet",
-    image: "/images/certifications/fortinet-nse7.png",
-    description: "Arquitetura de segurança de rede avançada",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "Fortinet"
-  },
-
-  // SOPHOS
+  // NETWORK & CLOUD SECURITY - SOPHOS
   {
     id: "sophos-engineer",
-    title: "Sophos Certified Engineer",
+    title: "Sophos Firewall Certified Engineer v21.0 (ET80)",
     issuer: "Sophos",
-    image: "/images/certifications/sophos-engineer.png",
-    description: "Implementação e gerenciamento de soluções Sophos",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "Sophos"
-  },
-  {
-    id: "sophos-architect",
-    title: "Sophos Certified Architect",
-    issuer: "Sophos",
-    image: "/images/certifications/sophos-architect.png",
-    description: "Arquitetura de soluções de segurança Sophos",
-    date: "2024",
+    image: "sophos_engineer",
+    description: "Implementação e gerenciamento de firewalls Sophos",
+    date: "2025",
     category: "Network & Cloud Security",
     subcategory: "Sophos"
   },
 
-  // MICROSOFT
+  // Segura
   {
-    id: "microsoft-365-security",
-    title: "Microsoft 365 Security Administrator",
-    issuer: "Microsoft",
-    image: "/images/certifications/microsoft-365-security.png",
-    description: "Administração de segurança no Microsoft 365 e Azure AD",
-    date: "2024",
+    id: "segura-pam-core-access-control",
+    title: "PAM Core Access Control",
+    issuer: "Segura",
+    image: "segura_pam_core",
+    description: "Achieved the 'PAM Core Access Control' certification track",
+    date: "2025",
     category: "Network & Cloud Security",
-    subcategory: "Microsoft"
+    subcategory: "Segura"
   },
-  {
-    id: "microsoft-azure-security",
-    title: "Microsoft Azure Security Engineer",
-    issuer: "Microsoft",
-    image: "/images/certifications/microsoft-azure-security.png",
-    description: "Engenharia de segurança na plataforma Azure",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "Microsoft"
-  },
-
-  // AWS
-  {
-    id: "aws-security-specialty",
-    title: "AWS Security Specialty",
-    issuer: "Amazon Web Services",
-    image: "/images/certifications/aws-security-specialty.png",
-    description: "Especialização em segurança de infraestrutura AWS",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "AWS"
-  },
-  {
-    id: "aws-solutions-architect",
-    title: "AWS Solutions Architect - Security",
-    issuer: "Amazon Web Services",
-    image: "/images/certifications/aws-solutions-architect.png",
-    description: "Arquitetura de soluções seguras na AWS",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "AWS"
-  },
-
-  // COMPTIA
-  {
-    id: "comptia-security-plus",
-    title: "CompTIA Security+",
-    issuer: "CompTIA",
-    image: "/images/certifications/comptia-security-plus.png",
-    description: "Fundamentos de segurança da informação e criptografia",
-    date: "2023",
-    category: "Network & Cloud Security",
-    subcategory: "CompTIA"
-  },
-  {
-    id: "comptia-cysa",
-    title: "CompTIA CySA+",
-    issuer: "CompTIA",
-    image: "/images/certifications/comptia-cysa.png",
-    description: "Análise de segurança cibernética e resposta a incidentes",
-    date: "2024",
-    category: "Network & Cloud Security",
-    subcategory: "CompTIA"
-  }
 ];
 
 export default function CertificationsCarousel() {
@@ -561,18 +454,18 @@ export default function CertificationsCarousel() {
   // If no certifications, show empty state
   if (filteredCertifications.length === 0) {
     return (
-      <Column gap="l" horizontal="center" paddingY="xl">
-        <Heading as="h2" variant="display-strong-s" align="center">
+      <Column gap="l" horizontal="center" paddingY="xl" className="mobile-padding">
+        <Heading as="h2" variant="display-strong-s" align="center" className="mobile-reduce-animations">
           Certificações & Badges
         </Heading>
         
         <Flex horizontal="center">
-          <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }}>
+          <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }} className="text-mobile">
             Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
           </Text>
         </Flex>
 
-        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak" className="text-mobile">
           Nenhuma certificação encontrada para a categoria selecionada.
         </Text>
       </Column>
@@ -582,8 +475,8 @@ export default function CertificationsCarousel() {
   // Safety check for currentCert
   if (!currentCert) {
     return (
-      <Column gap="l" horizontal="center" paddingY="xl">
-        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+      <Column gap="l" horizontal="center" paddingY="xl" className="mobile-padding">
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak" className="text-mobile">
           Carregando certificações...
         </Text>
       </Column>
@@ -591,28 +484,30 @@ export default function CertificationsCarousel() {
   }
 
   return (
-    <Column fillWidth gap="xl" paddingY="xl">
-      <Heading as="h1" variant="display-strong-l" align="center">
+    <Column fillWidth gap="xl" paddingY="xl" className="mobile-padding">
+      <Heading as="h1" variant="display-strong-l" align="center" className="mobile-reduce-animations">
         Certificações & Badges
       </Heading>
       
       <Flex horizontal="center">
-        <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }}>
+        <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }} className="text-mobile">
           Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
         </Text>
       </Flex>
 
       {/* Category Tabs */}
-      <Flex horizontal="center" gap="m" wrap>
+      <Flex horizontal="center" gap="m" wrap className="mobile-gap">
         {categories.map((category) => (
           <Button
             key={category}
             variant={currentCategory === category ? "primary" : "secondary"}
             size="m"
             onClick={() => setCurrentCategory(category)}
+            className="mobile-reduce-animations"
             style={{
               borderRadius: "24px",
-              padding: "8px 16px"
+              padding: "8px 16px",
+              fontSize: window.innerWidth <= 768 ? "14px" : "16px"
             }}
           >
             {category}
@@ -622,7 +517,7 @@ export default function CertificationsCarousel() {
 
       {/* Subcategory Tabs - Show for all categories that have subcategories */}
       {subcategories.length > 0 && (
-        <Flex horizontal="center" gap="s" wrap>
+        <Flex horizontal="center" gap="s" wrap className="mobile-gap">
           {subcategories.map((subcategory) => (
             <Button
               key={subcategory}
@@ -632,10 +527,11 @@ export default function CertificationsCarousel() {
                 console.log('Clicking subcategory:', subcategory);
                 setCurrentSubcategory(subcategory!);
               }}
+              className="mobile-reduce-animations"
               style={{
                 borderRadius: "16px",
                 padding: "6px 12px",
-                fontSize: "14px"
+                fontSize: window.innerWidth <= 768 ? "12px" : "14px"
               }}
             >
               {subcategory}
@@ -651,6 +547,7 @@ export default function CertificationsCarousel() {
         horizontal="center" 
         gap="l"
         style={{ position: "relative" }}
+        className="mobile-gap"
       >
         {/* Previous Button */}
         <Button
@@ -658,18 +555,20 @@ export default function CertificationsCarousel() {
           size="l"
           prefixIcon="chevronLeft"
           onClick={prevSlide}
+          className="mobile-reduce-animations"
           style={{
-            position: "absolute",
-            left: "-70px",
-            top: "50%",
-            transform: "translateY(-50%)",
+            position: window.innerWidth <= 768 ? "relative" : "absolute",
+            left: window.innerWidth <= 768 ? "auto" : "-70px",
+            top: window.innerWidth <= 768 ? "auto" : "50%",
+            transform: window.innerWidth <= 768 ? "none" : "translateY(-50%)",
             zIndex: 10,
             minWidth: "56px",
             height: "56px",
             borderRadius: "50%",
             backgroundColor: "var(--surface-elevated)",
             border: "2px solid var(--neutral-alpha-weak)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)"
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            marginBottom: window.innerWidth <= 768 ? "16px" : "0"
           }}
         />
 
@@ -680,11 +579,12 @@ export default function CertificationsCarousel() {
           horizontal="center" 
           gap="xl"
           padding="xl"
+          className="mobile-padding"
           style={{
             border: "1px solid var(--neutral-alpha-weak)",
             borderRadius: "20px",
             backgroundColor: "var(--surface-background)",
-            minHeight: "500px",
+            minHeight: window.innerWidth <= 768 ? "400px" : "500px",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
           }}
         >
@@ -694,27 +594,30 @@ export default function CertificationsCarousel() {
             paddingY="xl"
             style={{
               width: "100%",
-              maxWidth: "400px",
+              maxWidth: window.innerWidth <= 768 ? "300px" : "400px",
+              height: window.innerWidth <= 768 ? "200px" : "280px",
               backgroundColor: "var(--surface-elevated)",
               borderRadius: "16px",
               border: "1px solid var(--neutral-alpha-weak)",
-              padding: "25px"
+              padding: window.innerWidth <= 768 ? "16px" : "25px"
             }}
           >
             <img
-              src={currentCert.image}
+              src={`/api/images?hash=${currentCert.image}`}
               alt={currentCert.title}
               style={{
                 width: "100%",
-                height: "auto",
+                height: window.innerWidth <= 768 ? "150px" : "200px",
                 objectFit: "contain",
                 borderRadius: "8px",
-                maxWidth: "100%",
-                minHeight: "120px"
+                maxWidth: "100%"
               }}
               onError={(e) => {
                 console.error('Failed to load image:', currentCert.image);
                 (e.target as HTMLImageElement).style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', currentCert.image);
               }}
             />
             {!currentCert.image && (
@@ -723,20 +626,20 @@ export default function CertificationsCarousel() {
                 vertical="center"
                 style={{
                   width: "100%",
-                  height: "200px",
+                  height: window.innerWidth <= 768 ? "150px" : "200px",
                   backgroundColor: "var(--neutral-alpha-weak)",
                   borderRadius: "8px",
                   color: "var(--neutral-on-background-weak)"
                 }}
               >
-                <Text variant="body-default-m">Imagem não disponível</Text>
+                <Text variant="body-default-m" className="text-mobile">Imagem não disponível</Text>
               </Flex>
             )}
           </Flex>
 
           {/* Certification Details */}
-          <Column gap="l" horizontal="center" style={{ textAlign: "center", maxWidth: "600px" }}>
-            <Heading as="h2" variant="heading-strong-l" style={{ lineHeight: "1.3" }}>
+          <Column gap="l" horizontal="center" style={{ textAlign: "center", maxWidth: "600px" }} className="mobile-gap">
+            <Heading as="h2" variant="heading-strong-l" style={{ lineHeight: "1.3" }} className="text-mobile">
               {currentCert.title}
             </Heading>
             
@@ -747,11 +650,12 @@ export default function CertificationsCarousel() {
                 lineHeight: "1.6",
                 color: "var(--neutral-on-background-weak)"
               }}
+              className="text-mobile"
             >
               {currentCert.description}
             </Text>
             
-            <Flex gap="m" vertical="center" wrap>
+            <Flex gap="m" vertical="center" wrap style={{ justifyContent: "center" }} className="mobile-gap">
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
@@ -796,30 +700,33 @@ export default function CertificationsCarousel() {
           size="l"
           prefixIcon="chevronRight"
           onClick={nextSlide}
+          className="mobile-reduce-animations"
           style={{
-            position: "absolute",
-            right: "-70px",
-            top: "50%",
-            transform: "translateY(-50%)",
+            position: window.innerWidth <= 768 ? "relative" : "absolute",
+            right: window.innerWidth <= 768 ? "auto" : "-70px",
+            top: window.innerWidth <= 768 ? "auto" : "50%",
+            transform: window.innerWidth <= 768 ? "none" : "translateY(-50%)",
             zIndex: 10,
             minWidth: "56px",
             height: "56px",
             borderRadius: "50%",
             backgroundColor: "var(--surface-elevated)",
             border: "2px solid var(--neutral-alpha-weak)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)"
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            marginTop: window.innerWidth <= 768 ? "16px" : "0"
           }}
         />
       </Flex>
 
       {/* Dots Indicator */}
-      <Flex horizontal="center" gap="s" paddingY="l">
+      <Flex horizontal="center" gap="s" paddingY="l" className="mobile-gap">
         {filteredCertifications.map((_, index) => (
           <Button
             key={index}
             variant="tertiary"
             size="s"
             onClick={() => goToSlide(index)}
+            className="mobile-reduce-animations"
             style={{
               width: "14px",
               height: "14px",
@@ -842,6 +749,7 @@ export default function CertificationsCarousel() {
           size="s"
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           prefixIcon={isAutoPlaying ? "pause" : "play"}
+          className="mobile-reduce-animations"
         >
           {isAutoPlaying ? "Pausar" : "Reproduzir"}
         </Button>

@@ -14,7 +14,7 @@ export async function generateMetadata() {
 
 export default function Certifications() {
   return (
-    <Flex maxWidth="l" horizontal="center">
+    <Flex maxWidth="l" horizontal="center" className="mobile-padding">
       <Schema
         as="webPage"
         baseURL={baseURL}

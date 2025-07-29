@@ -19,7 +19,7 @@ import { RecentWriteups } from "@/components/home/RecentWriteups";
 
 export default function Home() {
   return (
-    <Column maxWidth="m" gap="xl" horizontal="center">
+    <Column maxWidth="m" gap="xl" horizontal="center" className="mobile-padding">
       <Schema
         as="webPage"
         baseURL={baseURL}
@@ -35,8 +35,8 @@ export default function Home() {
       />
 
       {/* HERO */}
-      <Column fillWidth paddingY="24" gap="m">
-        <Column maxWidth="s">
+      <Column fillWidth paddingY="24" gap="m" className="mobile-gap">
+        <Column maxWidth="s" style={{ width: '100%' }}>
           {home.featured.display && (
             <RevealFx fillWidth horizontal="start" paddingTop="16" paddingBottom="32" paddingLeft="12">
               <Badge
@@ -54,13 +54,13 @@ export default function Home() {
           )}
 
           <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="16">
-            <Heading wrap="balance" variant="display-strong-l">
+            <Heading wrap="balance" variant="display-strong-l" className="mobile-reduce-animations">
               {home.headline}
             </Heading>
           </RevealFx>
 
           <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="32">
-            <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
+            <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl" className="text-mobile">
               {home.subline}
             </Text>
           </RevealFx>
@@ -74,6 +74,7 @@ export default function Home() {
               size="m"
               weight="default"
               arrowIcon
+              className="mobile-reduce-animations"
             >
               <Flex gap="8" vertical="center" paddingRight="4">
                 {about.avatar.display && (
@@ -91,12 +92,8 @@ export default function Home() {
         </Column>
       </Column>
 
-
-
       {/* WRITE-UPS RECENTES */}
       <RecentWriteups />
-
-
     </Column>
   );
 }

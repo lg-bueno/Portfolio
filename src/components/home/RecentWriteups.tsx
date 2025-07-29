@@ -56,11 +56,11 @@ export function RecentWriteups() {
 
   if (loading) {
     return (
-      <Column fillWidth gap="l" paddingY="xl">
-        <Heading as="h2" variant="display-strong-s" align="center">
+      <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
+        <Heading as="h2" variant="display-strong-s" align="center" className="mobile-reduce-animations">
           Write-ups Recentes
         </Heading>
-        <Text align="center">Carregando...</Text>
+        <Text align="center" className="text-mobile">Carregando...</Text>
       </Column>
     );
   }
@@ -70,46 +70,55 @@ export function RecentWriteups() {
   }
 
   return (
-    <Column fillWidth gap="l" paddingY="xl">
+    <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
       <RevealFx translateY="16" delay={0.8}>
-        <Heading as="h2" variant="display-strong-s" align="center" marginBottom="l">
+        <Heading as="h2" variant="display-strong-s" align="center" marginBottom="l" className="mobile-reduce-animations">
           Write-ups Recentes
         </Heading>
       </RevealFx>
 
       <RevealFx translateY="16" delay={0.9}>
-        <Column fillWidth gap="m" maxWidth="l" horizontal="center">
+        <Column fillWidth gap="m" maxWidth="l" horizontal="center" className="mobile-gap">
           {posts.map((post, index) => (
             <Flex
               key={post.slug}
               fillWidth
               gap="l"
               padding="m"
+              className="mobile-reduce-animations"
               style={{
                 border: "1px solid var(--neutral-alpha-weak)",
                 borderRadius: "12px",
                 cursor: "pointer",
                 transition: "all 0.2s ease",
                 backgroundColor: "var(--surface-background)",
+                flexDirection: window.innerWidth <= 768 ? "column" : "row",
+                alignItems: window.innerWidth <= 768 ? "center" : "flex-start",
+                textAlign: window.innerWidth <= 768 ? "center" : "left",
               }}
               onClick={() => handleClick(post.slug)}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
+                if (window.innerWidth > 768) {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
+                if (window.innerWidth > 768) {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }
               }}
             >
               {/* Imagem de Capa */}
               <Flex 
                 style={{ 
-                  width: "120px", 
-                  height: "80px",
+                  width: window.innerWidth <= 768 ? "100%" : "120px", 
+                  height: window.innerWidth <= 768 ? "160px" : "80px",
                   borderRadius: "8px",
                   overflow: "hidden",
-                  flexShrink: 0
+                  flexShrink: 0,
+                  marginBottom: window.innerWidth <= 768 ? "12px" : "0"
                 }}
               >
                 <Media
@@ -124,7 +133,7 @@ export function RecentWriteups() {
               </Flex>
 
               {/* Conteúdo */}
-              <Column flex={1} gap="s">
+              <Column flex={1} gap="s" style={{ width: window.innerWidth <= 768 ? "100%" : "auto" }}>
                 <Heading 
                   as="h3" 
                   variant="heading-strong-m" 
@@ -133,6 +142,7 @@ export function RecentWriteups() {
                     color: "var(--neutral-on-background-strong)",
                     lineHeight: "1.3"
                   }}
+                  className="text-mobile"
                 >
                   {post.metadata.title}
                 </Heading>
@@ -145,6 +155,7 @@ export function RecentWriteups() {
                     lineHeight: "1.4",
                     color: "var(--neutral-on-background-weak)"
                   }}
+                  className="text-mobile"
                 >
                   {post.metadata.summary}
                 </Text>
@@ -173,6 +184,7 @@ export function RecentWriteups() {
             size="m"
             weight="default"
             arrowIcon
+            className="mobile-reduce-animations"
           >
             Ver Todos os Write-ups
           </Button>

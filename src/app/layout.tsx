@@ -6,6 +6,7 @@ import classNames from "classnames";
 
 import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
 import { Footer, Header, RouteGuard, Providers } from '@/components';
+import SecurityWrapper from '@/components/SecurityWrapper';
 import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
 
 export async function generateMetadata() {
@@ -96,7 +97,8 @@ export default async function RootLayout({
         />
       </head>
       <Providers>
-        <Column as="body" background="page" fillWidth style={{minHeight: "100vh"}} margin="0" padding="0" horizontal="center">
+        <SecurityWrapper>
+          <Column as="body" background="page" fillWidth style={{minHeight: "100vh"}} margin="0" padding="0" horizontal="center">
           <Background
             position="fixed"
             mask={{
@@ -146,6 +148,15 @@ export default async function RootLayout({
               padding="l"
               horizontal="center"
               flex={1}
+              className="mobile-padding"
+              style={{
+                paddingLeft: 'var(--static-space-16)',
+                paddingRight: 'var(--static-space-16)',
+                '@media (max-width: 768px)': {
+                  paddingLeft: 'var(--static-space-12)',
+                  paddingRight: 'var(--static-space-12)',
+                }
+              }}
             >
               <Flex horizontal="center" fillWidth minHeight="0">
                 <RouteGuard>
@@ -155,7 +166,8 @@ export default async function RootLayout({
             </Flex>
             <Footer/>
           </Column>
-        </Providers>
-      </Flex>
+        </SecurityWrapper>
+      </Providers>
+    </Flex>
   );
 }
