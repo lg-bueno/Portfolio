@@ -1,13 +1,13 @@
 import { home } from "./content";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL = "https://demo.magic-portfolio.com";
+const baseURL = "https://buenodevsec.com.br";
 
 const routes = {
   "/": true,
   "/about": true,
   "/work": true,
-      "/certifications": true,
+  "/certifications": true,
 };
 
 const display = {

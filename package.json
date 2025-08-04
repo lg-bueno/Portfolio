@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "export": "next export",
-    "build": "next build && node scripts/obfuscate.js",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "obfuscate": "node scripts/obfuscate.js"
@@ -16,7 +16,8 @@
     "classnames": "^2.5.1",
     "cookie": "^1.0.2",
     "gray-matter": "^4.0.3",
-    "next": "^15.3.1",
+    "next": "^15.4.5",
+    "next-intl": "^4.3.4",
     "next-mdx-remote": "^5.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",

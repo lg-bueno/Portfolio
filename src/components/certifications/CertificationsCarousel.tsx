@@ -445,19 +445,10 @@ export default function CertificationsCarousel() {
 
   // Update subcategory when category changes (only if current subcategory is not valid)
   useEffect(() => {
-    console.log('useEffect triggered - Category:', currentCategory, 'Subcategory:', currentSubcategory, 'Available:', subcategories);
     if (subcategories.length > 0 && subcategories[0] && !subcategories.includes(currentSubcategory)) {
-      console.log('Fixing subcategory from', currentSubcategory, 'to', subcategories[0]);
       setCurrentSubcategory(subcategories[0]);
     }
   }, [currentCategory, subcategories, currentSubcategory]);
-
-  // Debug logs
-  console.log('Current Category:', currentCategory);
-  console.log('Current Subcategory:', currentSubcategory);
-  console.log('Available Subcategories:', subcategories);
-  console.log('Filtered Certifications:', filteredCertifications.length);
-  console.log('Filtered Certifications Details:', filteredCertifications.map(c => ({ title: c.title, subcategory: c.subcategory, image: c.image })));
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => 
@@ -476,9 +467,6 @@ export default function CertificationsCarousel() {
   };
 
   const currentCert = filteredCertifications[safeCurrentIndex];
-
-  // Debug current certification
-  console.log('Current Certification:', currentCert?.title, 'Image:', currentCert?.image);
 
   // If no certifications, show empty state
   if (filteredCertifications.length === 0) {
@@ -514,17 +502,45 @@ export default function CertificationsCarousel() {
 
   return (
     <Column fillWidth gap="xl" paddingY="xl" className="mobile-padding">
-      <Heading as="h1" variant="display-strong-l" align="center" className="mobile-reduce-animations">
-        Certificações & Badges
-      </Heading>
-      
-      <Flex horizontal="center">
-        <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }} className="text-mobile">
+      {/* Premium Header with Gradient */}
+      <Column gap="l" horizontal="center" className="mobile-gap">
+        <Heading 
+          as="h1" 
+          variant="display-strong-l" 
+          align="center" 
+          className="mobile-reduce-animations"
+          style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+            fontSize: isMobile ? "2.5rem" : "3.5rem",
+            fontWeight: "800"
+          }}
+        >
+          Certificações & Badges
+        </Heading>
+        
+        <Text 
+          variant="body-default-l" 
+          align="center" 
+          onBackground="neutral-weak" 
+          style={{ 
+            maxWidth: "600px",
+            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            fontWeight: "500"
+          }} 
+          className="text-mobile"
+        >
           Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
         </Text>
-      </Flex>
+      </Column>
 
-      {/* Category Tabs */}
+      {/* Premium Category Tabs with Glass Effect */}
       <Flex horizontal="center" gap="m" wrap className="mobile-gap">
         {categories.map((category) => (
           <Button
@@ -534,9 +550,22 @@ export default function CertificationsCarousel() {
             onClick={() => setCurrentCategory(category)}
             className="mobile-reduce-animations"
             style={{
-              borderRadius: "24px",
-              padding: "8px 16px",
-              fontSize: isMobile ? "14px" : "16px"
+              borderRadius: "30px",
+              padding: "16px 28px",
+              fontSize: isMobile ? "14px" : "16px",
+              fontWeight: "700",
+              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: currentCategory === category 
+                ? "0 12px 35px rgba(102, 126, 234, 0.4), 0 4px 15px rgba(0, 0, 0, 0.2)" 
+                : "0 4px 15px rgba(0, 0, 0, 0.1)",
+              transform: currentCategory === category ? "translateY(-4px) scale(1.05)" : "translateY(0) scale(1)",
+              background: currentCategory === category 
+                ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                : "rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(20px)",
+              border: currentCategory === category 
+                ? "2px solid rgba(102, 126, 234, 0.3)" 
+                : "1px solid rgba(255, 255, 255, 0.2)"
             }}
           >
             {category}
@@ -544,7 +573,7 @@ export default function CertificationsCarousel() {
         ))}
       </Flex>
 
-      {/* Subcategory Tabs - Show for all categories that have subcategories */}
+      {/* Premium Subcategory Tabs */}
       {subcategories.length > 0 && (
         <Flex horizontal="center" gap="s" wrap className="mobile-gap">
           {subcategories.map((subcategory) => (
@@ -552,15 +581,21 @@ export default function CertificationsCarousel() {
               key={subcategory}
               variant={currentSubcategory === subcategory ? "primary" : "tertiary"}
               size="s"
-              onClick={() => {
-                console.log('Clicking subcategory:', subcategory);
-                setCurrentSubcategory(subcategory!);
-              }}
+              onClick={() => setCurrentSubcategory(subcategory!)}
               className="mobile-reduce-animations"
               style={{
-                borderRadius: "16px",
-                padding: "6px 12px",
-                fontSize: isMobile ? "12px" : "14px"
+                borderRadius: "25px",
+                padding: "10px 20px",
+                fontSize: isMobile ? "12px" : "14px",
+                fontWeight: "600",
+                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                background: currentSubcategory === subcategory 
+                  ? "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" 
+                  : "rgba(255, 255, 255, 0.05)",
+                backdropFilter: "blur(15px)",
+                border: currentSubcategory === subcategory 
+                  ? "2px solid rgba(240, 147, 251, 0.3)" 
+                  : "1px solid rgba(255, 255, 255, 0.1)"
               }}
             >
               {subcategory}
@@ -569,16 +604,15 @@ export default function CertificationsCarousel() {
         </Flex>
       )}
 
-      {/* Carousel Container */}
+      {/* Premium Carousel Container */}
       <Flex 
         fillWidth 
         maxWidth="l" 
         horizontal="center" 
-        gap="l"
         style={{ position: "relative" }}
         className="mobile-gap"
       >
-        {/* Previous Button */}
+        {/* Premium Navigation Arrows */}
         <Button
           variant="secondary"
           size="l"
@@ -587,21 +621,40 @@ export default function CertificationsCarousel() {
           className="mobile-reduce-animations"
           style={{
             position: isMobile ? "relative" : "absolute",
-            left: isMobile ? "auto" : "-70px",
+            left: isMobile ? "auto" : "-120px",
             top: isMobile ? "auto" : "50%",
             transform: isMobile ? "none" : "translateY(-50%)",
             zIndex: 10,
-            minWidth: "56px",
-            height: "56px",
+            minWidth: "80px",
+            height: "80px",
             borderRadius: "50%",
-            backgroundColor: "var(--surface-elevated)",
-            border: "2px solid var(--neutral-alpha-weak)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            marginBottom: isMobile ? "16px" : "0"
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+            border: "2px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+            marginBottom: isMobile ? "20px" : "0",
+            transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+            backdropFilter: "blur(30px)",
+            opacity: 0.9
+          }}
+          onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+            if (!isMobile) {
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.2)";
+              e.currentTarget.style.boxShadow = "0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)";
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
+            }
+          }}
+          onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+            if (!isMobile) {
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)";
+              e.currentTarget.style.opacity = "0.9";
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
+            }
           }}
         />
 
-        {/* Main Content */}
+        {/* Premium Main Content Card */}
         <Column 
           fillWidth 
           maxWidth="l" 
@@ -610,38 +663,74 @@ export default function CertificationsCarousel() {
           padding="xl"
           className="mobile-padding"
           style={{
-            border: "1px solid var(--neutral-alpha-weak)",
-            borderRadius: "20px",
-            backgroundColor: "var(--surface-background)",
-            minHeight: isMobile ? "400px" : "500px",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            borderRadius: "40px",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+            minHeight: isMobile ? "550px" : "650px",
+            boxShadow: "0 25px 80px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(40px)",
+            position: "relative",
+            overflow: "hidden"
           }}
         >
-          {/* Certification Image Container */}
+          {/* Animated Background Effects */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "100%",
+            background: "radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%)",
+            opacity: 0.6,
+            pointerEvents: "none",
+            animation: "backgroundShift 10s ease-in-out infinite"
+          }} />
+
+          {/* Floating Particles Effect */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "100%",
+            background: "radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%), radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%)",
+            opacity: 0.3,
+            pointerEvents: "none",
+            animation: "particleFloat 15s ease-in-out infinite"
+          }} />
+
+          {/* Premium Certification Image Container */}
           <Flex 
             horizontal="center" 
             paddingY="xl"
             style={{
               width: "100%",
-              maxWidth: isMobile ? "300px" : "400px",
-              height: isMobile ? "200px" : "280px",
-              backgroundColor: "var(--surface-elevated)",
-              borderRadius: "16px",
-              border: "1px solid var(--neutral-alpha-weak)",
-              padding: isMobile ? "16px" : "25px"
+              maxWidth: isMobile ? "380px" : "480px",
+              height: isMobile ? "280px" : "350px",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              borderRadius: "30px",
+              border: "2px solid rgba(255, 255, 255, 0.2)",
+              padding: isMobile ? "28px" : "36px",
+              boxShadow: "0 15px 35px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+              position: "relative",
+              overflow: "hidden",
+              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+              backdropFilter: "blur(20px)"
             }}
           >
             <Image
               src={`/api/images?hash=${currentCert.image}`}
               alt={currentCert.title}
-              width={isMobile ? 268 : 350}
-              height={isMobile ? 168 : 230}
+              width={isMobile ? 324 : 408}
+              height={isMobile ? 216 : 272}
               style={{
                 width: "100%",
-                height: isMobile ? "150px" : "200px",
+                height: isMobile ? "200px" : "260px",
                 objectFit: "contain",
-                borderRadius: "8px",
-                maxWidth: "100%"
+                borderRadius: "20px",
+                maxWidth: "100%",
+                transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                filter: "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2))"
               }}
               onError={(e) => {
                 console.error('Failed to load image:', currentCert.image);
@@ -657,10 +746,11 @@ export default function CertificationsCarousel() {
                 vertical="center"
                 style={{
                   width: "100%",
-                  height: isMobile ? "150px" : "200px",
-                  backgroundColor: "var(--neutral-alpha-weak)",
-                  borderRadius: "8px",
-                  color: "var(--neutral-on-background-weak)"
+                  height: isMobile ? "200px" : "260px",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                  borderRadius: "20px",
+                  color: "var(--neutral-on-background-weak)",
+                  border: "2px solid rgba(255, 255, 255, 0.1)"
                 }}
               >
                 <Text variant="body-default-m" className="text-mobile">Imagem não disponível</Text>
@@ -668,9 +758,22 @@ export default function CertificationsCarousel() {
             )}
           </Flex>
 
-          {/* Certification Details */}
-          <Column gap="l" horizontal="center" style={{ textAlign: "center", maxWidth: "600px" }} className="mobile-gap">
-            <Heading as="h2" variant="heading-strong-l" style={{ lineHeight: "1.3" }} className="text-mobile">
+          {/* Premium Certification Details */}
+          <Column gap="l" horizontal="center" style={{ textAlign: "center", maxWidth: "900px" }} className="mobile-gap">
+            <Heading 
+              as="h2" 
+              variant="heading-strong-l" 
+              style={{ 
+                lineHeight: "1.3",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontWeight: "800",
+                fontSize: isMobile ? "1.8rem" : "2.2rem"
+              }} 
+              className="text-mobile"
+            >
               {currentCert.title}
             </Heading>
             
@@ -678,21 +781,31 @@ export default function CertificationsCarousel() {
               variant="body-default-l" 
               onBackground="neutral-weak"
               style={{ 
-                lineHeight: "1.6",
-                color: "var(--neutral-on-background-weak)"
+                lineHeight: "1.8",
+                color: "var(--neutral-on-background-weak)",
+                maxWidth: "700px",
+                fontWeight: "500",
+                textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)"
               }}
               className="text-mobile"
             >
               {currentCert.description}
             </Text>
             
+            {/* Premium Metadata Tags */}
             <Flex gap="m" vertical="center" wrap style={{ justifyContent: "center" }} className="mobile-gap">
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
                   color: "var(--neutral-on-background-weak)",
-                  fontWeight: "500"
+                  fontWeight: "700",
+                  padding: "12px 20px",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                  borderRadius: "20px",
+                  border: "2px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                  backdropFilter: "blur(15px)"
                 }}
               >
                 {currentCert.issuer}
@@ -704,7 +817,8 @@ export default function CertificationsCarousel() {
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
-                  color: "var(--neutral-on-background-weak)"
+                  color: "var(--neutral-on-background-weak)",
+                  fontWeight: "600"
                 }}
               >
                 {currentCert.date}
@@ -716,7 +830,8 @@ export default function CertificationsCarousel() {
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
-                  color: "var(--neutral-on-background-weak)"
+                  color: "var(--neutral-on-background-weak)",
+                  fontWeight: "600"
                 }}
               >
                 {currentCert.category}
@@ -734,22 +849,41 @@ export default function CertificationsCarousel() {
           className="mobile-reduce-animations"
           style={{
             position: isMobile ? "relative" : "absolute",
-            right: isMobile ? "auto" : "-70px",
+            right: isMobile ? "auto" : "-120px",
             top: isMobile ? "auto" : "50%",
             transform: isMobile ? "none" : "translateY(-50%)",
             zIndex: 10,
-            minWidth: "56px",
-            height: "56px",
+            minWidth: "80px",
+            height: "80px",
             borderRadius: "50%",
-            backgroundColor: "var(--surface-elevated)",
-            border: "2px solid var(--neutral-alpha-weak)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            marginTop: isMobile ? "16px" : "0"
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+            border: "2px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+            marginTop: isMobile ? "20px" : "0",
+            transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+            backdropFilter: "blur(30px)",
+            opacity: 0.9
+          }}
+          onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+            if (!isMobile) {
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.2)";
+              e.currentTarget.style.boxShadow = "0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)";
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
+            }
+          }}
+          onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+            if (!isMobile) {
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)";
+              e.currentTarget.style.opacity = "0.9";
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
+            }
           }}
         />
       </Flex>
 
-      {/* Dots Indicator */}
+      {/* Premium Dots Indicator */}
       <Flex horizontal="center" gap="s" paddingY="l" className="mobile-gap">
         {filteredCertifications.map((_, index) => (
           <Button
@@ -759,21 +893,44 @@ export default function CertificationsCarousel() {
             onClick={() => goToSlide(index)}
             className="mobile-reduce-animations"
             style={{
-              width: "14px",
-              height: "14px",
+              width: "20px",
+              height: "20px",
               borderRadius: "50%",
               padding: 0,
               backgroundColor: index === currentIndex 
-                ? "var(--brand-on-background-strong)" 
-                : "var(--neutral-alpha-weak)",
-              transition: "all 0.3s ease",
-              transform: index === currentIndex ? "scale(1.2)" : "scale(1)"
+                ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                : "rgba(255, 255, 255, 0.2)",
+              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+              transform: index === currentIndex ? "scale(1.5)" : "scale(1)",
+              border: "2px solid rgba(255, 255, 255, 0.3)",
+              cursor: "pointer",
+              boxShadow: index === currentIndex 
+                ? "0 8px 20px rgba(102, 126, 234, 0.4)" 
+                : "0 4px 10px rgba(0, 0, 0, 0.2)"
+            }}
+            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (!isMobile) {
+                e.currentTarget.style.transform = "scale(1.6)";
+                e.currentTarget.style.backgroundColor = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+                e.currentTarget.style.boxShadow = "0 12px 25px rgba(102, 126, 234, 0.5)";
+              }
+            }}
+            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (!isMobile) {
+                e.currentTarget.style.transform = index === currentIndex ? "scale(1.5)" : "scale(1)";
+                e.currentTarget.style.backgroundColor = index === currentIndex 
+                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                  : "rgba(255, 255, 255, 0.2)";
+                e.currentTarget.style.boxShadow = index === currentIndex 
+                  ? "0 8px 20px rgba(102, 126, 234, 0.4)" 
+                  : "0 4px 10px rgba(0, 0, 0, 0.2)";
+              }
             }}
           />
         ))}
       </Flex>
 
-      {/* Auto-play Toggle */}
+      {/* Premium Auto-play Toggle */}
       <Flex horizontal="center" paddingTop="m">
         <Button
           variant="tertiary"
@@ -781,10 +938,46 @@ export default function CertificationsCarousel() {
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           prefixIcon={isAutoPlaying ? "pause" : "play"}
           className="mobile-reduce-animations"
+          style={{
+            borderRadius: "30px",
+            padding: "12px 24px",
+            fontSize: isMobile ? "14px" : "16px",
+            fontWeight: "600",
+            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+            border: "2px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+            backdropFilter: "blur(15px)"
+          }}
         >
           {isAutoPlaying ? "Pausar" : "Reproduzir"}
         </Button>
       </Flex>
+
+      {/* Premium CSS Animations */}
+      <style jsx>{`
+        @keyframes backgroundShift {
+          0%, 100% { 
+            opacity: 0.6;
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.8;
+            transform: scale(1.05);
+          }
+        }
+        
+        @keyframes particleFloat {
+          0%, 100% { 
+            opacity: 0.3;
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% { 
+            opacity: 0.5;
+            transform: translateY(-10px) rotate(180deg);
+          }
+        }
+      `}</style>
     </Column>
   );
 }

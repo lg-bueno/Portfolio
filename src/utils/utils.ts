@@ -20,11 +20,9 @@ type Metadata = {
   link?: string;
 };
 
-import { notFound } from 'next/navigation';
-
 function getMDXFiles(dir: string) {
   if (!fs.existsSync(dir)) {
-    notFound();
+    return [];
   }
 
   return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx");
@@ -32,7 +30,7 @@ function getMDXFiles(dir: string) {
 
 function readMDXFile(filePath: string) {
     if (!fs.existsSync(filePath)) {
-        notFound();
+        return null;
     }
 
   const rawContent = fs.readFileSync(filePath, "utf-8");
@@ -55,7 +53,10 @@ function readMDXFile(filePath: string) {
 function getMDXData(dir: string) {
   const mdxFiles = getMDXFiles(dir);
   return mdxFiles.map((file) => {
-    const { metadata, content } = readMDXFile(path.join(dir, file));
+    const fileData = readMDXFile(path.join(dir, file));
+    if (!fileData) return null;
+    
+    const { metadata, content } = fileData;
     const slug = path.basename(file, path.extname(file));
 
     return {
@@ -63,7 +64,7 @@ function getMDXData(dir: string) {
       slug,
       content,
     };
-  });
+  }).filter(Boolean);
 }
 
 export function getPosts(customPath = ["", "", "", ""]) {

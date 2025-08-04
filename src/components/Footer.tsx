@@ -1,115 +1,112 @@
 "use client";
 
-import { Flex, Text, IconButton } from "@once-ui-system/core";
-import { person, social } from "@/resources";
-import styles from "./Footer.module.scss";
-import { useEffect, useState } from "react";
+import { Flex, Text, Button } from "@once-ui-system/core";
+import { person, social } from "@/resources/content";
 
-// Hook para detectar tamanho da tela de forma segura
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
-    height: typeof window !== 'undefined' ? window.innerHeight : 768,
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      handleResize();
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, []);
-
-  return windowSize;
-}
-
-export default function Footer() {
-  const { width } = useWindowSize();
-  const isMobile = width <= 768;
-  
+export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <Flex
       as="footer"
       fillWidth
-      padding="8"
-      horizontal="center"
-      mobileDirection="column"
-      className="mobile-padding"
+      horizontal="space-between"
+      vertical="center"
+      padding="l"
+      style={{
+        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)",
+        backdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+        position: "relative",
+        overflow: "hidden"
+      }}
     >
-      <Flex
-        className={`${styles.mobile} mobile-gap`}
-        maxWidth="m"
-        paddingY="8"
-        paddingX="16"
-        gap="16"
-        horizontal="space-between"
-        vertical="center"
-        style={{
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: isMobile ? "center" : "space-between",
-          textAlign: isMobile ? "center" : "left"
-        }}
+      {/* Animated Background Effect */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: "100%",
+        background: "radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(240, 147, 251, 0.03) 0%, transparent 50%)",
+        opacity: 0.4,
+        pointerEvents: "none"
+      }} />
+
+      {/* Footer Content */}
+      <Flex 
+        horizontal="space-between" 
+        vertical="center" 
+        fillWidth
+        style={{ position: "relative", zIndex: 1 }}
       >
-        <Text variant="body-default-s" onBackground="neutral-strong" className="text-mobile">
-          <Text onBackground="neutral-weak">© {currentYear} /</Text>
-          <Text paddingX="4">{person.name}</Text>
-          <Text onBackground="neutral-weak">
-            {" "}
-            Powered by{" "}
-            <a
-              href="https://github.com/lg-bueno/portfolio.js"
+        {/* Copyright */}
+        <Text
+          variant="body-default-s"
+          onBackground="neutral-weak"
+          style={{
+            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            fontWeight: "500"
+          }}
+        >
+          © {currentYear} {person.name}. Todos os direitos reservados.
+        </Text>
+
+        {/* Social Links */}
+        <Flex horizontal="center" gap="m">
+          {social.map((socialItem) => (
+            <Button
+              key={socialItem.name}
+              variant="tertiary"
+              size="s"
+              href={socialItem.link}
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                color: "var(--neutral-on-background-weak)",
-                textDecoration: "none",
-                borderBottom: "1px solid var(--neutral-alpha-weak)",
-                transition: "all 0.2s ease",
+                borderRadius: "20px",
+                padding: "8px 12px",
+                fontSize: "14px",
+                fontWeight: "600",
+                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                transform: "translateY(0)"
               }}
-              onMouseEnter={(e) => {
-                if (!isMobile) {
-                  e.currentTarget.style.borderBottomColor = "var(--brand-on-background-strong)";
-                  e.currentTarget.style.color = "var(--brand-on-background-strong)";
-                }
+              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.currentTarget.style.transform = "translateY(-2px) scale(1.05)";
+                e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.15)";
               }}
-              onMouseLeave={(e) => {
-                if (!isMobile) {
-                  e.currentTarget.style.borderBottomColor = "var(--neutral-alpha-weak)";
-                  e.currentTarget.style.color = "var(--neutral-on-background-weak)";
-                }
+              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
-              Portfolio.js
-            </a>
-          </Text>
-        </Text>
-        <Flex gap="16" style={{ justifyContent: isMobile ? "center" : "flex-end" }}>
-          {social.map(
-            (item) =>
-              item.link && (
-                <IconButton
-                  key={item.name}
-                  href={item.link}
-                  icon={item.icon}
-                  tooltip={item.name}
-                  size="s"
-                  variant="ghost"
-                  className="mobile-reduce-animations"
-                />
-              ),
-          )}
+              {socialItem.name}
+            </Button>
+          ))}
         </Flex>
+
+        {/* Made with Love */}
+        <Text
+          variant="body-default-s"
+          onBackground="neutral-weak"
+          style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            fontWeight: "500"
+          }}
+        >
+          Feito com ❤️ e Next.js
+        </Text>
       </Flex>
-      <Flex height="80" show="s"></Flex>
     </Flex>
   );
 }

@@ -1,25 +1,63 @@
-// LocationDisplay.tsx
-'use client';
+"use client";
 
-type Props = {
-  timeZone: string;
-};
+import { useState, useEffect } from "react";
+import { Text } from "@once-ui-system/core";
 
-const timeZoneMap: Record<string, { label: string; icon?: string }> = {
-  'America/Sao_Paulo': { label: 'Goiânia, Brasil' },
-  'Europe/Vienna': { label: 'Viena, Áustria', icon: '🇦🇹' },
-  'Europe/Lisbon': { label: 'Lisboa, Portugal', icon: '🇵🇹' },
-  'America/New_York': { label: 'Nova York, EUA', icon: '🇺🇸' },
-};
+export function LocationDisplay() {
+  const [location, setLocation] = useState<string>("São Paulo, BR");
+  const [mounted, setMounted] = useState(false);
 
-export default function LocationDisplay({ timeZone }: Props) {
-  const location = timeZoneMap[timeZone] ?? { label: timeZone };
+  useEffect(() => {
+    setMounted(true);
+    // Simular localização baseada no fuso horário ou IP
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (timezone.includes("America/Sao_Paulo")) {
+      setLocation("São Paulo, BR");
+    } else if (timezone.includes("America/New_York")) {
+      setLocation("New York, US");
+    } else if (timezone.includes("Europe/London")) {
+      setLocation("London, UK");
+    } else {
+      setLocation("Remote");
+    }
+  }, []);
+
+  if (!mounted) {
+    return (
+      <Text
+        variant="body-default-s"
+        onBackground="neutral-weak"
+        style={{
+          background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+          fontWeight: "600",
+          padding: "6px 12px",
+          borderRadius: "12px",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          backdropFilter: "blur(10px)"
+        }}
+      >
+        São Paulo, BR
+      </Text>
+    );
+  }
 
   return (
-    <span className="flex items-center gap-2 text-sm text-white">
-      {/* Substituir por um ícone SVG ou remover se não quiser emojis */}
-      {location.icon && <span aria-hidden="true">{location.icon}</span>}
-      <span>{location.label}</span>
-    </span>
+    <Text
+      variant="body-default-s"
+      onBackground="neutral-weak"
+      style={{
+        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+        fontWeight: "600",
+        padding: "6px 12px",
+        borderRadius: "12px",
+        border: "1px solid rgba(255, 255, 255, 0.2)",
+        backdropFilter: "blur(10px)",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: "translateY(0)"
+      }}
+
+    >
+      📍 {location}
+    </Text>
   );
 }

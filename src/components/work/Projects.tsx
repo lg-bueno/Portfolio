@@ -1,51 +1,31 @@
 "use client";
 
-import { Column, Flex, Heading, Text, Media } from "@once-ui-system/core";
+import { Column, Heading, Text, Button, Flex } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useWindowSize } from "@/utils/useWindowSize";
 
 interface Post {
   slug: string;
   metadata: {
     title: string;
-    publishedAt: string;
-    summary: string;
-    images: string[];
+    summary?: string;
+    description?: string;
+    publishedAt?: string;
+    readTime?: string;
   };
 }
 
-// Hook para detectar tamanho da tela de forma segura
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
-    height: typeof window !== 'undefined' ? window.innerHeight : 768,
-  });
-
+export default function Projects() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const { width } = useWindowSize();
+  const [isMounted, setIsMounted] = useState(false);
+  
   useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      handleResize();
-      return () => window.removeEventListener('resize', handleResize);
-    }
+    setIsMounted(true);
   }, []);
 
-  return windowSize;
-}
-
-export default function Projects() {
-  const router = useRouter();
-  const { width } = useWindowSize();
-  const isMobile = width <= 768;
-  
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Evitar diferenças de hidratação usando valores padrão até o componente ser montado
+  const isMobile = isMounted ? width <= 768 : false;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -56,142 +36,121 @@ export default function Projects() {
           setPosts(data);
         } else {
           console.error('Failed to fetch posts');
+          setPosts([]);
         }
       } catch (error) {
         console.error('Error fetching posts:', error);
-      } finally {
-        setLoading(false);
+        setPosts([]);
       }
     };
 
     fetchPosts();
   }, []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    };
-    return date.toLocaleDateString('en-US', options);
-  };
-
-  const handleClick = (slug: string) => {
-    router.push(`/work/${slug}`);
-  };
-
-  if (loading) {
-    return (
-      <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
-        <Text align="center" className="text-mobile">Carregando projetos...</Text>
-      </Column>
-    );
-  }
-
-  if (posts.length === 0) {
-    return (
-      <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
-        <Text align="center" className="text-mobile">Nenhum projeto encontrado.</Text>
-      </Column>
-    );
-  }
-
   return (
-    <Column fillWidth gap="m" marginBottom="40" paddingX="l" maxWidth="l" horizontal="center" className="mobile-padding">
-      {posts.map((post, index) => (
-        <Flex
-          key={post.slug}
-          fillWidth
-          gap="l"
-          paddingY="m"
-          className="mobile-reduce-animations"
-          style={{
-            borderBottom: "1px solid var(--neutral-alpha-weak)",
-            cursor: "pointer",
-            flexDirection: isMobile ? "column" : "row",
-            alignItems: isMobile ? "center" : "flex-start",
-            textAlign: isMobile ? "center" : "left",
-            paddingBottom: isMobile ? "24px" : "16px",
-          }}
-          onClick={() => handleClick(post.slug)}
-        >
-          {/* Conteúdo Textual */}
-          <Column flex={1} gap="s" style={{ width: isMobile ? "100%" : "auto" }}>
-            <Heading 
-              as="h2" 
-              variant="heading-strong-l" 
-              style={{ 
-                margin: 0,
-                color: "var(--neutral-on-background-strong)",
-                lineHeight: "1.3"
-              }}
-              className="text-mobile"
-            >
-              {post.metadata.title}
-            </Heading>
-            
-            <Text 
-              variant="body-default-m" 
-              onBackground="neutral-weak"
-              style={{ 
-                margin: 0,
-                lineHeight: "1.5",
-                color: "var(--neutral-on-background-weak)"
-              }}
-              className="text-mobile"
-            >
-              {post.metadata.summary}
-            </Text>
-            
-            <Flex gap="s" vertical="center" style={{ marginTop: "8px", justifyContent: isMobile ? "center" : "flex-start" }}>
-              <Text 
-                variant="body-default-xs" 
-                onBackground="neutral-weak"
-                style={{ 
-                  color: "var(--neutral-on-background-weak)",
-                  fontSize: "12px"
-                }}
-              >
-                {formatDate(post.metadata.publishedAt)}
-              </Text>
-              <Text variant="body-default-xs" onBackground="neutral-weak">•</Text>
-              <Text 
-                variant="body-default-xs" 
-                onBackground="neutral-weak"
-                style={{ 
-                  color: "var(--neutral-on-background-weak)",
-                  fontSize: "12px"
-                }}
-              >
-                5 min read
-              </Text>
-            </Flex>
-          </Column>
+    <Column
+      fillWidth
+      maxWidth="l"
+      horizontal="center"
+      gap="xl"
+      padding="xl"
+      className="mobile-padding"
+      style={{
+        flexDirection: isMobile ? "column" : "row",
+        alignItems: isMobile ? "center" : "flex-start",
+        textAlign: isMobile ? "center" : "left"
+      }}
+    >
+      <Column
+        fillWidth
+        maxWidth="m"
+        gap="l"
+        className="mobile-gap"
+        style={{
+          width: isMobile ? "100%" : "60%",
+          height: isMobile ? "auto" : "100%",
+          marginTop: isMobile ? "20px" : "0",
+          paddingBottom: isMobile ? "20px" : "0"
+        }}
+      >
+        <Heading variant="display-default-l" className="text-mobile">
+          Work
+        </Heading>
+        <Text variant="body-default-l" onBackground="neutral-weak" className="text-mobile">
+          A collection of my work and projects.
+        </Text>
+      </Column>
 
-          {/* Imagem de Capa */}
-          <Flex 
-            style={{ 
-              width: isMobile ? "100%" : "200px", 
-              height: isMobile ? "180px" : "120px",
-              borderRadius: "8px",
-              overflow: "hidden",
-              flexShrink: 0,
-              marginTop: isMobile ? "16px" : "0"
+      <Column
+        fillWidth
+        maxWidth="m"
+        gap="l"
+        className="mobile-gap"
+        style={{
+          width: isMobile ? "100%" : "40%",
+          height: isMobile ? "auto" : "100%"
+        }}
+      >
+        {posts.map((post) => (
+          <Button
+            key={post.slug}
+            href={`/work/${post.slug}`}
+            variant="tertiary"
+            size="l"
+            className="mobile-reduce-animations"
+            style={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "16px 20px",
+              borderRadius: "12px",
+              border: "1px solid var(--neutral-alpha-weak)",
+              backgroundColor: "var(--surface-elevated)",
+              transition: "all 0.3s ease",
+              textAlign: "left",
+              width: "100%",
+              marginBottom: "8px"
+            }}
+            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (!isMobile) {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.1)";
+              }
+            }}
+            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+              if (!isMobile) {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              }
             }}
           >
-            <Media
-              src={post.metadata.images[0] || "/images/default-cover.jpg"}
-              alt={post.metadata.title}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover"
-              }}
-            />
-          </Flex>
-        </Flex>
-      ))}
+            <Column gap="s" style={{ alignItems: "flex-start" }}>
+              <Text variant="body-default-m" style={{ fontWeight: "600", color: "var(--neutral-on-background-strong)" }}>
+                {post.metadata.title}
+              </Text>
+              <Text variant="body-default-s" onBackground="neutral-weak" style={{ lineHeight: "1.4" }}>
+                {post.metadata.summary || post.metadata.description || "Descrição não disponível"}
+              </Text>
+              <Flex gap="s" vertical="center">
+                <Text variant="body-default-xs" onBackground="neutral-weak">
+                  {new Date(post.metadata.publishedAt || Date.now()).toLocaleDateString("pt-BR", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  })}
+                </Text>
+                {post.metadata.readTime && (
+                  <>
+                    <Text variant="body-default-xs" onBackground="neutral-weak">•</Text>
+                    <Text variant="body-default-xs" onBackground="neutral-weak">
+                      {post.metadata.readTime}
+                    </Text>
+                  </>
+                )}
+              </Flex>
+            </Column>
+          </Button>
+        ))}
+      </Column>
     </Column>
   );
 }
