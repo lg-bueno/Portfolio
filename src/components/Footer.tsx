@@ -10,9 +10,10 @@ export function Footer() {
     <Flex
       as="footer"
       fillWidth
-      horizontal="space-between"
+      horizontal="center"
       vertical="center"
       padding="l"
+      className="footer-container"
       style={{
         background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)",
         backdropFilter: "blur(20px)",
@@ -35,15 +36,58 @@ export function Footer() {
 
       {/* Footer Content */}
       <Flex 
-        horizontal="space-between" 
+        horizontal="center" 
         vertical="center" 
         fillWidth
+        className="footer-content"
         style={{ position: "relative", zIndex: 1 }}
       >
-        {/* Copyright */}
+        {/* Social Links - Centered */}
+        <Flex horizontal="center" gap="m" className="footer-links">
+          {social.map((socialItem) => (
+            <Button
+              key={socialItem.name}
+              variant="tertiary"
+              size="s"
+              href={socialItem.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-link"
+              style={{
+                borderRadius: "25px",
+                padding: "12px 20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(15px)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                transition: "all 0.3s ease",
+                transform: "translateY(0)"
+              }}
+              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%)";
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.3)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.3)";
+              }}
+              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
+              }}
+            >
+              {socialItem.name}
+            </Button>
+          ))}
+        </Flex>
+
+        {/* Copyright - Centered */}
         <Text
           variant="body-default-s"
           onBackground="neutral-weak"
+          className="footer-copyright"
           style={{
             background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
             WebkitBackgroundClip: "text",
@@ -55,47 +99,11 @@ export function Footer() {
           © {currentYear} {person.name}. Todos os direitos reservados.
         </Text>
 
-        {/* Social Links */}
-        <Flex horizontal="center" gap="m">
-          {social.map((socialItem) => (
-            <Button
-              key={socialItem.name}
-              variant="tertiary"
-              size="s"
-              href={socialItem.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                borderRadius: "20px",
-                padding: "8px 12px",
-                fontSize: "14px",
-                fontWeight: "600",
-                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                backdropFilter: "blur(10px)",
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                transform: "translateY(0)"
-              }}
-              onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.currentTarget.style.transform = "translateY(-2px) scale(1.05)";
-                e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
-                e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.15)";
-              }}
-              onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.currentTarget.style.transform = "translateY(0) scale(1)";
-                e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              {socialItem.name}
-            </Button>
-          ))}
-        </Flex>
-
-        {/* Made with Love */}
+        {/* Made with Love - Centered */}
         <Text
           variant="body-default-s"
           onBackground="neutral-weak"
+          className="footer-made-with"
           style={{
             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
             WebkitBackgroundClip: "text",

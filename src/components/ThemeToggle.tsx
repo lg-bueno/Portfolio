@@ -11,6 +11,11 @@ export function ThemeToggle() {
     setMounted(true);
     const savedTheme = localStorage.getItem("data-theme") || "dark";
     setTheme(savedTheme);
+    // Ensure attribute is applied on mount
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      document.body.setAttribute("data-theme", savedTheme);
+    }
   }, []);
 
   const toggleTheme = () => {
@@ -18,6 +23,7 @@ export function ThemeToggle() {
     setTheme(newTheme);
     localStorage.setItem("data-theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
+    document.body.setAttribute("data-theme", newTheme);
   };
 
   if (!mounted) {

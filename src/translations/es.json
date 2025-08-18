@@ -108,11 +108,17 @@
   },
   "work": {
     "title": "Write-ups",
-    "description": "Artículos y proyectos sobre desarrollo y seguridad"
+    "subtitle": "Explora mis write-ups y proyectos sobre seguridad y desarrollo",
+    "description": "Artículos y proyectos sobre desarrollo y seguridad",
+    "viewProject": "Ver Proyecto",
+    "readMore": "Leer más"
   },
   "certifications": {
     "title": "Certificaciones",
-    "description": "Certificaciones profesionales en tecnología y seguridad"
+    "subtitle": "Certificaciones y Badges",
+    "description": "Certificaciones profesionales en tecnología y seguridad",
+    "viewCert": "Ver Certificaciones",
+    "issuedBy": "Emitidas por"
   },
   "common": {
     "loading": "Cargando...",

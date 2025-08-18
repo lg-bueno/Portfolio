@@ -56,12 +56,7 @@ export default function RootLayout({
           <Providers>
             <SecurityWrapper>
               <RouteGuard>
-                <div style={{
-                  minHeight: "100vh",
-                  background: "linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%)",
-                  position: "relative",
-                  overflow: "hidden"
-                }}>
+                <div className="app-background">
                   {/* Animated Background */}
                   <div style={{
                     position: "fixed",

@@ -132,6 +132,7 @@ export function Header() {
             <Text
               variant="body-default-s"
               onBackground="neutral-weak"
+              suppressHydrationWarning
               style={{
                 fontWeight: "600",
                 background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",

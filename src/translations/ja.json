@@ -108,11 +108,17 @@
   },
   "work": {
     "title": "Write-ups",
-    "description": "開発とセキュリティに関する記事とプロジェクト"
+    "subtitle": "セキュリティと開発に関する私のwrite-upとプロジェクトを探索",
+    "description": "開発とセキュリティに関する記事とプロジェクト",
+    "viewProject": "プロジェクトを見る",
+    "readMore": "続きを読む"
   },
   "certifications": {
     "title": "認定",
-    "description": "技術とセキュリティの専門認定"
+    "subtitle": "認定 & バッジ",
+    "description": "技術とセキュリティの専門認定",
+    "viewCert": "認定を見る",
+    "issuedBy": "発行者"
   },
   "common": {
     "loading": "読み込み中...",

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Column, Flex, Heading, Text, Media, Button } from "@once-ui-system/core";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Image from "next/image";
 import { getImageUrl } from "@/utils/imageHash";
 
@@ -9,7 +10,7 @@ interface Certification {
   id: string;
   title: string;
   issuer: string;
-  image: string; // Agora é um hash que será usado na API
+  image: string;
   description: string;
   date: string;
   category: string;
@@ -389,12 +390,15 @@ const certifications: Certification[] = [
 
 export default function CertificationsCarousel() {
   const { width } = useWindowSize();
+  const { t } = useLanguage();
   const isMobile = width <= 768;
+  const isTablet = width <= 1024 && width > 768;
   
   const [currentCategory, setCurrentCategory] = useState("Endpoint & EDR");
   const [currentSubcategory, setCurrentSubcategory] = useState("Bitdefender");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
 
   // Get unique categories
   const categories = Array.from(new Set(certifications.map(cert => cert.category)));
@@ -420,16 +424,16 @@ export default function CertificationsCarousel() {
 
   // Auto-play functionality
   useEffect(() => {
-    if (!isAutoPlaying || filteredCertifications.length <= 1) return;
+    if (!isAutoPlaying || filteredCertifications.length <= 1 || isHovering) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => 
         prevIndex === filteredCertifications.length - 1 ? 0 : prevIndex + 1
       );
-    }, 4000); // Change every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, filteredCertifications.length]);
+  }, [isAutoPlaying, filteredCertifications.length, isHovering]);
 
   // Update currentIndex if it's out of bounds
   useEffect(() => {
@@ -443,7 +447,7 @@ export default function CertificationsCarousel() {
     setCurrentIndex(0);
   }, [currentCategory, currentSubcategory]);
 
-  // Update subcategory when category changes (only if current subcategory is not valid)
+  // Update subcategory when category changes
   useEffect(() => {
     if (subcategories.length > 0 && subcategories[0] && !subcategories.includes(currentSubcategory)) {
       setCurrentSubcategory(subcategories[0]);
@@ -451,15 +455,17 @@ export default function CertificationsCarousel() {
   }, [currentCategory, subcategories, currentSubcategory]);
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === filteredCertifications.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex === filteredCertifications.length - 1 ? 0 : prevIndex + 1;
+      return newIndex;
+    });
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? filteredCertifications.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex === 0 ? filteredCertifications.length - 1 : prevIndex - 1;
+      return newIndex;
+    });
   };
 
   const goToSlide = (index: number) => {
@@ -468,22 +474,35 @@ export default function CertificationsCarousel() {
 
   const currentCert = filteredCertifications[safeCurrentIndex];
 
+  // Get next and previous certifications for preview effect
+  const getNextCert = (index: number) => {
+    if (filteredCertifications.length === 0) return null;
+    const nextIndex = (index + 1) % filteredCertifications.length;
+    return filteredCertifications[nextIndex];
+  };
+
+  const getPrevCert = (index: number) => {
+    if (filteredCertifications.length === 0) return null;
+    const prevIndex = index === 0 ? filteredCertifications.length - 1 : index - 1;
+    return filteredCertifications[prevIndex];
+  };
+
   // If no certifications, show empty state
   if (filteredCertifications.length === 0) {
     return (
-      <Column gap="l" horizontal="center" paddingY="xl" className="mobile-padding">
-        <Heading as="h2" variant="display-strong-s" align="center" className="mobile-reduce-animations">
-          Certificações & Badges
+      <Column fillWidth gap="xl" paddingY="xl" style={{ minHeight: "100vh" }} className="certifications-container">
+        <Heading as="h2" variant="display-strong-s" align="center">
+          {t('certifications.subtitle')}
         </Heading>
         
         <Flex horizontal="center">
-          <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }} className="text-mobile">
-            Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
+          <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }}>
+            {t('certifications.description')}
           </Text>
         </Flex>
 
-        <Text variant="body-default-m" align="center" onBackground="neutral-weak" className="text-mobile">
-          Nenhuma certificação encontrada para a categoria selecionada.
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+          {t('common.noData')}
         </Text>
       </Column>
     );
@@ -492,73 +511,59 @@ export default function CertificationsCarousel() {
   // Safety check for currentCert
   if (!currentCert) {
     return (
-      <Column gap="l" horizontal="center" paddingY="xl" className="mobile-padding">
-        <Text variant="body-default-m" align="center" onBackground="neutral-weak" className="text-mobile">
-          Carregando certificações...
+      <Column fillWidth gap="xl" paddingY="xl" style={{ minHeight: "100vh" }} className="certifications-container">
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+          {t('common.loading')}
         </Text>
       </Column>
     );
   }
 
+  // Get preview certifications safely
+  const nextCert = getNextCert(safeCurrentIndex);
+  const prevCert = getPrevCert(safeCurrentIndex);
+
   return (
-    <Column fillWidth gap="xl" paddingY="xl" className="mobile-padding">
-      {/* Premium Header with Gradient */}
-      <Column gap="l" horizontal="center" className="mobile-gap">
+    <Column fillWidth gap="xl" paddingY="xl" style={{ minHeight: "100vh" }} className="certifications-container">
+      {/* Header Section */}
+      <Column gap="l" horizontal="center" className="certifications-header">
         <Heading 
           as="h1" 
           variant="display-strong-l" 
-          align="center" 
-          className="mobile-reduce-animations"
-          style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-            fontSize: isMobile ? "2.5rem" : "3.5rem",
-            fontWeight: "800"
-          }}
+          align="center"
+          className="certifications-title"
         >
-          Certificações & Badges
+          {t('certifications.subtitle')}
         </Heading>
         
         <Text 
           variant="body-default-l" 
           align="center" 
           onBackground="neutral-weak" 
-          style={{ 
-            maxWidth: "600px",
-            background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            fontWeight: "500"
-          }} 
-          className="text-mobile"
+          className="certifications-subtitle"
         >
-          Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
+          {t('certifications.description')}
         </Text>
       </Column>
 
-      {/* Premium Category Tabs with Glass Effect */}
-      <Flex horizontal="center" gap="m" wrap className="mobile-gap">
+      {/* Category Tabs */}
+      <Flex horizontal="center" gap="m" wrap className="certifications-filters">
         {categories.map((category) => (
           <Button
             key={category}
             variant={currentCategory === category ? "primary" : "secondary"}
             size="m"
             onClick={() => setCurrentCategory(category)}
-            className="mobile-reduce-animations"
             style={{
               borderRadius: "30px",
               padding: "16px 28px",
               fontSize: isMobile ? "14px" : "16px",
               fontWeight: "700",
-              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+              transition: "all 0.3s ease",
               boxShadow: currentCategory === category 
-                ? "0 12px 35px rgba(102, 126, 234, 0.4), 0 4px 15px rgba(0, 0, 0, 0.2)" 
+                ? "0 12px 35px rgba(102, 126, 234, 0.4)" 
                 : "0 4px 15px rgba(0, 0, 0, 0.1)",
-              transform: currentCategory === category ? "translateY(-4px) scale(1.05)" : "translateY(0) scale(1)",
+              transform: currentCategory === category ? "translateY(-2px)" : "translateY(0)",
               background: currentCategory === category 
                 ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
                 : "rgba(255, 255, 255, 0.1)",
@@ -573,22 +578,21 @@ export default function CertificationsCarousel() {
         ))}
       </Flex>
 
-      {/* Premium Subcategory Tabs */}
+      {/* Subcategory Tabs */}
       {subcategories.length > 0 && (
-        <Flex horizontal="center" gap="s" wrap className="mobile-gap">
+        <Flex horizontal="center" gap="s" wrap className="certifications-filters">
           {subcategories.map((subcategory) => (
             <Button
               key={subcategory}
               variant={currentSubcategory === subcategory ? "primary" : "tertiary"}
               size="s"
               onClick={() => setCurrentSubcategory(subcategory!)}
-              className="mobile-reduce-animations"
               style={{
                 borderRadius: "25px",
                 padding: "10px 20px",
                 fontSize: isMobile ? "12px" : "14px",
                 fontWeight: "600",
-                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                transition: "all 0.3s ease",
                 background: currentSubcategory === subcategory 
                   ? "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" 
                   : "rgba(255, 255, 255, 0.05)",
@@ -604,76 +608,83 @@ export default function CertificationsCarousel() {
         </Flex>
       )}
 
-      {/* Premium Carousel Container */}
+      {/* Enhanced Carousel Container with Infinite Effect */}
       <Flex 
         fillWidth 
         maxWidth="l" 
         horizontal="center" 
         style={{ position: "relative" }}
-        className="mobile-gap"
+        className="certifications-carousel"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
       >
-        {/* Premium Navigation Arrows */}
-        <Button
-          variant="secondary"
-          size="l"
-          prefixIcon="chevronLeft"
-          onClick={prevSlide}
-          className="mobile-reduce-animations"
-          style={{
-            position: isMobile ? "relative" : "absolute",
-            left: isMobile ? "auto" : "-120px",
-            top: isMobile ? "auto" : "50%",
-            transform: isMobile ? "none" : "translateY(-50%)",
-            zIndex: 10,
-            minWidth: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
-            border: "2px solid rgba(255, 255, 255, 0.2)",
-            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-            marginBottom: isMobile ? "20px" : "0",
-            transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-            backdropFilter: "blur(30px)",
-            opacity: 0.9
-          }}
-          onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-            if (!isMobile) {
-              e.currentTarget.style.transform = "translateY(-50%) scale(1.2)";
-              e.currentTarget.style.boxShadow = "0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)";
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
-            }
-          }}
-          onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-            if (!isMobile) {
-              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)";
-              e.currentTarget.style.opacity = "0.9";
-              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
-            }
-          }}
-        />
+        {/* Previous Preview Card (Left) */}
+        {!isMobile && filteredCertifications.length >= 2 && prevCert && (
+          <div 
+            className="preview-card"
+            style={{
+              left: isTablet ? "-150px" : "-200px",
+              width: isTablet ? "140px" : "180px",
+              height: isTablet ? "180px" : "240px"
+            }}
+          >
+            <div style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              borderRadius: "20px",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden"
+            }}>
+              <Image
+                src={`/api/images?hash=${prevCert.image}`}
+                alt={prevCert.title}
+                width={isTablet ? 100 : 140}
+                height={isTablet ? 130 : 180}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  borderRadius: "15px",
+                  filter: "grayscale(30%) brightness(0.8)"
+                }}
+              />
+            </div>
+          </div>
+        )}
 
-        {/* Premium Main Content Card */}
+        {/* Navigation Arrows */}
+        {!isMobile && filteredCertifications.length > 1 && (
+          <Button
+            variant="secondary"
+            size="l"
+            prefixIcon="chevronLeft"
+            onClick={prevSlide}
+            className="certifications-nav-button"
+            style={{
+              left: isTablet ? "-60px" : "-80px"
+            }}
+          />
+        )}
+
+        {/* Main Content Card */}
         <Column 
           fillWidth 
           maxWidth="l" 
           horizontal="center" 
           gap="xl"
           padding="xl"
-          className="mobile-padding"
+          className="certifications-card"
           style={{
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            borderRadius: "40px",
-            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
-            minHeight: isMobile ? "550px" : "650px",
-            boxShadow: "0 25px 80px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-            backdropFilter: "blur(40px)",
-            position: "relative",
-            overflow: "hidden"
+            transform: isHovering ? "scale(1.02)" : "scale(1)",
+            position: "relative"
           }}
         >
-          {/* Animated Background Effects */}
+          {/* Background Effects */}
           <div style={{
             position: "absolute",
             top: 0,
@@ -682,62 +693,24 @@ export default function CertificationsCarousel() {
             height: "100%",
             background: "radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%)",
             opacity: 0.6,
-            pointerEvents: "none",
-            animation: "backgroundShift 10s ease-in-out infinite"
+            pointerEvents: "none"
           }} />
 
-          {/* Floating Particles Effect */}
-          <div style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "100%",
-            background: "radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%), radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%)",
-            opacity: 0.3,
-            pointerEvents: "none",
-            animation: "particleFloat 15s ease-in-out infinite"
-          }} />
-
-          {/* Premium Certification Image Container */}
+          {/* Certification Image */}
           <Flex 
             horizontal="center" 
-            paddingY="xl"
-            style={{
-              width: "100%",
-              maxWidth: isMobile ? "380px" : "480px",
-              height: isMobile ? "280px" : "350px",
-              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
-              borderRadius: "30px",
-              border: "2px solid rgba(255, 255, 255, 0.2)",
-              padding: isMobile ? "28px" : "36px",
-              boxShadow: "0 15px 35px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
-              position: "relative",
-              overflow: "hidden",
-              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-              backdropFilter: "blur(20px)"
-            }}
+            paddingY="l"
+            className="certifications-image-container"
           >
             <Image
               src={`/api/images?hash=${currentCert.image}`}
               alt={currentCert.title}
-              width={isMobile ? 324 : 408}
-              height={isMobile ? 216 : 272}
-              style={{
-                width: "100%",
-                height: isMobile ? "200px" : "260px",
-                objectFit: "contain",
-                borderRadius: "20px",
-                maxWidth: "100%",
-                transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-                filter: "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2))"
-              }}
+              width={isMobile ? 280 : isTablet ? 320 : 352}
+              height={isMobile ? 180 : isTablet ? 200 : 240}
+              className="certifications-image"
               onError={(e) => {
                 console.error('Failed to load image:', currentCert.image);
                 (e.target as HTMLImageElement).style.display = 'none';
-              }}
-              onLoad={() => {
-                console.log('Image loaded successfully:', currentCert.image);
               }}
             />
             {!currentCert.image && (
@@ -746,20 +719,20 @@ export default function CertificationsCarousel() {
                 vertical="center"
                 style={{
                   width: "100%",
-                  height: isMobile ? "200px" : "260px",
+                  height: "100%",
                   background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
-                  borderRadius: "20px",
+                  borderRadius: "15px",
                   color: "var(--neutral-on-background-weak)",
                   border: "2px solid rgba(255, 255, 255, 0.1)"
                 }}
               >
-                <Text variant="body-default-m" className="text-mobile">Imagem não disponível</Text>
+                <Text variant="body-default-m">Imagem não disponível</Text>
               </Flex>
             )}
           </Flex>
 
-          {/* Premium Certification Details */}
-          <Column gap="l" horizontal="center" style={{ textAlign: "center", maxWidth: "900px" }} className="mobile-gap">
+          {/* Certification Details */}
+          <Column gap="l" horizontal="center" className="certifications-details">
             <Heading 
               as="h2" 
               variant="heading-strong-l" 
@@ -770,9 +743,8 @@ export default function CertificationsCarousel() {
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
                 fontWeight: "800",
-                fontSize: isMobile ? "1.8rem" : "2.2rem"
-              }} 
-              className="text-mobile"
+                fontSize: isMobile ? "1.6rem" : isTablet ? "1.8rem" : "2rem"
+              }}
             >
               {currentCert.title}
             </Heading>
@@ -783,36 +755,32 @@ export default function CertificationsCarousel() {
               style={{ 
                 lineHeight: "1.8",
                 color: "var(--neutral-on-background-weak)",
-                maxWidth: "700px",
-                fontWeight: "500",
-                textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)"
+                maxWidth: "600px",
+                fontWeight: "500"
               }}
-              className="text-mobile"
             >
               {currentCert.description}
             </Text>
             
-            {/* Premium Metadata Tags */}
-            <Flex gap="m" vertical="center" wrap style={{ justifyContent: "center" }} className="mobile-gap">
+            {/* Metadata Tags */}
+            <Flex gap="m" vertical="center" wrap style={{ justifyContent: "center" }} className="certifications-metadata">
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
                   color: "var(--neutral-on-background-weak)",
                   fontWeight: "700",
-                  padding: "12px 20px",
+                  padding: "8px 16px",
                   background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
-                  borderRadius: "20px",
-                  border: "2px solid rgba(255, 255, 255, 0.2)",
-                  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                  borderRadius: "15px",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
                   backdropFilter: "blur(15px)"
                 }}
               >
                 {currentCert.issuer}
               </Text>
-              <Text variant="body-default-s" onBackground="neutral-weak">
-                •
-              </Text>
+              <Text variant="body-default-s" onBackground="neutral-weak">•</Text>
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
@@ -823,9 +791,7 @@ export default function CertificationsCarousel() {
               >
                 {currentCert.date}
               </Text>
-              <Text variant="body-default-s" onBackground="neutral-weak">
-                •
-              </Text>
+              <Text variant="body-default-s" onBackground="neutral-weak">•</Text>
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
@@ -838,146 +804,164 @@ export default function CertificationsCarousel() {
               </Text>
             </Flex>
           </Column>
+
+          {/* Counter Inside Card - At the bottom */}
+          {filteredCertifications.length > 1 && (
+            <Flex 
+              horizontal="center" 
+              gap="s" 
+              paddingY="m" 
+              className="certifications-dots"
+              style={{
+                background: "rgba(0, 0, 0, 0.5)",
+                borderRadius: "15px",
+                padding: "6px 12px",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                marginTop: "auto"
+              }}
+            >
+              {filteredCertifications.map((_, index) => (
+                <Button
+                  key={index}
+                  variant="tertiary"
+                  size="s"
+                  onClick={() => goToSlide(index)}
+                  className={`certifications-dot ${index === currentIndex ? 'active' : ''}`}
+                  style={{
+                    width: isMobile ? "6px" : "8px",
+                    height: isMobile ? "6px" : "8px",
+                    borderRadius: "50%",
+                    padding: 0,
+                    backgroundColor: index === currentIndex 
+                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                      : "rgba(255, 255, 255, 0.5)",
+                    transition: "all 0.3s ease",
+                    transform: index === currentIndex ? "scale(1.2)" : "scale(1)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    cursor: "pointer",
+                    margin: "0 1px"
+                  }}
+                />
+              ))}
+            </Flex>
+          )}
         </Column>
 
-        {/* Next Button */}
-        <Button
-          variant="secondary"
-          size="l"
-          prefixIcon="chevronRight"
-          onClick={nextSlide}
-          className="mobile-reduce-animations"
-          style={{
-            position: isMobile ? "relative" : "absolute",
-            right: isMobile ? "auto" : "-120px",
-            top: isMobile ? "auto" : "50%",
-            transform: isMobile ? "none" : "translateY(-50%)",
-            zIndex: 10,
-            minWidth: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
-            border: "2px solid rgba(255, 255, 255, 0.2)",
-            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-            marginTop: isMobile ? "20px" : "0",
-            transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-            backdropFilter: "blur(30px)",
-            opacity: 0.9
-          }}
-          onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-            if (!isMobile) {
-              e.currentTarget.style.transform = "translateY(-50%) scale(1.2)";
-              e.currentTarget.style.boxShadow = "0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)";
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
-            }
-          }}
-          onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-            if (!isMobile) {
-              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)";
-              e.currentTarget.style.opacity = "0.9";
-              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
-            }
-          }}
-        />
-      </Flex>
-
-      {/* Premium Dots Indicator */}
-      <Flex horizontal="center" gap="s" paddingY="l" className="mobile-gap">
-        {filteredCertifications.map((_, index) => (
-          <Button
-            key={index}
-            variant="tertiary"
-            size="s"
-            onClick={() => goToSlide(index)}
-            className="mobile-reduce-animations"
+        {/* Next Preview Card (Right) */}
+        {!isMobile && filteredCertifications.length >= 2 && nextCert && (
+          <div 
+            className="preview-card"
             style={{
-              width: "20px",
-              height: "20px",
-              borderRadius: "50%",
-              padding: 0,
-              backgroundColor: index === currentIndex 
-                ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                : "rgba(255, 255, 255, 0.2)",
-              transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-              transform: index === currentIndex ? "scale(1.5)" : "scale(1)",
-              border: "2px solid rgba(255, 255, 255, 0.3)",
-              cursor: "pointer",
-              boxShadow: index === currentIndex 
-                ? "0 8px 20px rgba(102, 126, 234, 0.4)" 
-                : "0 4px 10px rgba(0, 0, 0, 0.2)"
+              right: isTablet ? "-150px" : "-200px",
+              width: isTablet ? "140px" : "180px",
+              height: isTablet ? "180px" : "240px"
             }}
-            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-              if (!isMobile) {
-                e.currentTarget.style.transform = "scale(1.6)";
-                e.currentTarget.style.backgroundColor = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-                e.currentTarget.style.boxShadow = "0 12px 25px rgba(102, 126, 234, 0.5)";
-              }
-            }}
-            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-              if (!isMobile) {
-                e.currentTarget.style.transform = index === currentIndex ? "scale(1.5)" : "scale(1)";
-                e.currentTarget.style.backgroundColor = index === currentIndex 
-                  ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
-                  : "rgba(255, 255, 255, 0.2)";
-                e.currentTarget.style.boxShadow = index === currentIndex 
-                  ? "0 8px 20px rgba(102, 126, 234, 0.4)" 
-                  : "0 4px 10px rgba(0, 0, 0, 0.2)";
-              }
+          >
+            <div style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              borderRadius: "20px",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden"
+            }}>
+              <Image
+                src={`/api/images?hash=${nextCert.image}`}
+                alt={nextCert.title}
+                width={isTablet ? 100 : 140}
+                height={isTablet ? 130 : 180}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  borderRadius: "15px",
+                  filter: "grayscale(30%) brightness(0.8)"
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Next Button */}
+        {!isMobile && filteredCertifications.length > 1 && (
+          <Button
+            variant="secondary"
+            size="l"
+            prefixIcon="chevronRight"
+            onClick={nextSlide}
+            className="certifications-nav-button"
+            style={{
+              right: isTablet ? "-60px" : "-80px"
             }}
           />
-        ))}
+        )}
       </Flex>
 
-      {/* Premium Auto-play Toggle */}
-      <Flex horizontal="center" paddingTop="m">
+      {/* Mobile Navigation */}
+      {isMobile && filteredCertifications.length > 1 && (
+        <Flex horizontal="center" gap="m" paddingY="l" className="certifications-navigation">
+          <Button
+            variant="secondary"
+            size="m"
+            prefixIcon="chevronLeft"
+            onClick={prevSlide}
+            className="certifications-nav-button"
+            style={{
+              minWidth: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              border: "2px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(15px)"
+            }}
+          />
+          <Button
+            variant="secondary"
+            size="m"
+            prefixIcon="chevronRight"
+            onClick={nextSlide}
+            className="certifications-nav-button"
+            style={{
+              minWidth: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              border: "2px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(15px)"
+            }}
+          />
+        </Flex>
+      )}
+
+      {/* Auto-play Toggle */}
+      <Flex horizontal="center" paddingTop="m" paddingBottom="l" className="certifications-autoplay">
         <Button
           variant="tertiary"
           size="s"
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           prefixIcon={isAutoPlaying ? "pause" : "play"}
-          className="mobile-reduce-animations"
           style={{
-            borderRadius: "30px",
-            padding: "12px 24px",
-            fontSize: isMobile ? "14px" : "16px",
+            borderRadius: "25px",
+            padding: isMobile ? "6px 12px" : "8px 16px",
+            fontSize: isMobile ? "12px" : "14px",
             fontWeight: "600",
-            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
             background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
-            border: "2px solid rgba(255, 255, 255, 0.2)",
-            boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
-            backdropFilter: "blur(15px)"
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+            backdropFilter: "blur(15px)",
+            minWidth: isMobile ? "80px" : "100px"
           }}
         >
           {isAutoPlaying ? "Pausar" : "Reproduzir"}
         </Button>
       </Flex>
-
-      {/* Premium CSS Animations */}
-      <style jsx>{`
-        @keyframes backgroundShift {
-          0%, 100% { 
-            opacity: 0.6;
-            transform: scale(1);
-          }
-          50% { 
-            opacity: 0.8;
-            transform: scale(1.05);
-          }
-        }
-        
-        @keyframes particleFloat {
-          0%, 100% { 
-            opacity: 0.3;
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% { 
-            opacity: 0.5;
-            transform: translateY(-10px) rotate(180deg);
-          }
-        }
-      `}</style>
     </Column>
   );
 }

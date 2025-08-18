@@ -108,11 +108,17 @@
   },
   "work": {
     "title": "Write-ups",
-    "description": "개발과 보안에 관한 기사와 프로젝트"
+    "subtitle": "보안과 개발에 관한 제 write-up과 프로젝트를 둘러보세요",
+    "description": "개발과 보안에 관한 기사와 프로젝트",
+    "viewProject": "프로젝트 보기",
+    "readMore": "더 읽기"
   },
   "certifications": {
     "title": "자격증",
-    "description": "기술과 보안 분야의 전문 자격증"
+    "subtitle": "자격증 & 배지",
+    "description": "기술과 보안 분야의 전문 자격증",
+    "viewCert": "자격증 보기",
+    "issuedBy": "발급처"
   },
   "common": {
     "loading": "로딩 중...",
