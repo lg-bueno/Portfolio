@@ -1,0 +1,132 @@
+{
+  "navigation": {
+    "home": "ホーム",
+    "about": "について",
+    "writeups": "Write-ups",
+    "certifications": "認定"
+  },
+  "header": {
+    "portfolio": "ポートフォリオ",
+    "location": "ゴイアニア, BR"
+  },
+  "home": {
+    "hero": {
+      "headline": "サイバーセキュリティスペシャリスト & フルスタック開発者",
+      "subline": "セキュリティとパフォーマンスに焦点を当てた革新的なデジタルソリューションへのアイデアの変換",
+      "viewWriteups": "Write-upsを見る",
+      "aboutMe": "私について"
+    },
+    "recentWriteups": {
+      "title": "最近のWrite-ups",
+      "subtitle": "セキュリティ、ペンテスティング、開発に関する最新の記事とWrite-ups",
+      "viewAll": "すべて見る"
+    }
+  },
+  "about": {
+    "title": "私について",
+    "description": "テクノロジーとセキュリティに情熱を持つサイバーセキュリティスペシャリスト",
+    "name": "レアンドロ・ガブリエル",
+    "role": "サイバーセキュリティスペシャリスト & フルスタック開発者",
+    "social": {
+      "github": "🐙 GitHub",
+      "linkedin": "💼 LinkedIn",
+      "email": "📧 Email"
+    },
+    "introduction": {
+      "title": "紹介",
+      "description": "攻撃的および防御的セキュリティに焦点を当てたサイバーセキュリティスペシャリストで、フルスタック開発の経験と高度なセキュリティ実践を組み合わせています。CTF愛好家、ツール自動化、情報セキュリティ研究に情熱を持っています。"
+    },
+    "workExperience": {
+      "title": "職歴",
+      "currentJob": {
+        "title": "情報セキュリティ技術者",
+        "company": "NOX5 Offensive Security",
+        "period": "2024 - 現在",
+        "description1": "企業のアイデンティティとアクセス管理のためのActive DirectoryとMicrosoft 365環境の管理と最適化。",
+        "description2": "FortinetとSophosファイアウォールを使用したネットワークインフラストラクチャの設定と保護、高度なセキュリティポリシーの実装。",
+        "description3": "セキュリティと運用タスクの自動化のためのスクリプト開発、企業の防御の効率性と回復力に貢献。"
+      },
+      "backendIntern": {
+        "title": "バックエンド開発インターン",
+        "company": "OVG - ゴイアス州ボランティア組織",
+        "period": "2022 - 2023",
+        "description1": "C++とPythonを使用した内部システムの開発と保守、パフォーマンスとセキュリティに焦点を当てています。",
+        "description2": "レガシーアプリケーションの近代化、アーキテクチャと安定性の改善を実装。"
+      },
+      "frontendIntern": {
+        "title": "フロントエンド開発インターン",
+        "company": "ゴイアス州議会",
+        "period": "2021 - 2022",
+        "description1": "HTML5、CSS3、JavaScriptを使用したレスポンシブインターフェースの開発、アクセシビリティとユーザビリティを優先。",
+        "description2": "機関プロジェクトでのReact.jsを使用した現代的な機能の実装。"
+      }
+    },
+    "academicBackground": {
+      "title": "学歴",
+      "postgrad": {
+        "institution": "Acadi-TI",
+        "degree": "サイバーセキュリティ修士課程 - 攻撃的および防御的セキュリティの専門化"
+      },
+      "bachelor": {
+        "institution": "Universidade Estácio de Sá",
+        "degree": "コンピュータサイエンス学士 - コンピューティングの基礎における堅実な基盤"
+      }
+    },
+    "technicalSkills": {
+      "title": "技術的スキル",
+      "development": {
+        "title": "開発",
+        "python": "Python",
+        "javascript": "JavaScript",
+        "cpp": "C/C++",
+        "bash": "Bash Scripting",
+        "react": "React.js",
+        "nodejs": "Node.js",
+        "sql": "SQL",
+        "git": "Git"
+      },
+      "security": {
+        "title": "情報セキュリティ",
+        "pentesting": "ペンテスティング",
+        "malware": "マルウェア分析",
+        "forensics": "デジタルフォレンジック",
+        "vulnerability": "脆弱性分析",
+        "ctfs": "CTFs"
+      },
+      "tools": {
+        "title": "ツールとテクノロジー",
+        "kali": "Kali Linux",
+        "windowsServer": "Windows Server",
+        "ubuntu": "Ubuntu",
+        "nmap": "Nmap",
+        "burpSuite": "Burp Suite",
+        "wireshark": "Wireshark",
+        "metasploit": "Metasploit",
+        "others": "その他"
+      }
+    }
+  },
+  "work": {
+    "title": "Write-ups",
+    "subtitle": "セキュリティと開発に関する私のwrite-upとプロジェクトを探索",
+    "description": "開発とセキュリティに関する記事とプロジェクト",
+    "viewProject": "プロジェクトを見る",
+    "readMore": "続きを読む"
+  },
+  "certifications": {
+    "title": "認定",
+    "subtitle": "認定 & バッジ",
+    "description": "技術とセキュリティの専門認定",
+    "viewCert": "認定を見る",
+    "issuedBy": "発行者"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "読み込みエラー",
+    "noData": "データが見つかりません"
+  },
+  "footer": {
+    "copyright": "全著作権所有。",
+    "madeWith": "❤️とNext.jsで作成"
+  }
+} 

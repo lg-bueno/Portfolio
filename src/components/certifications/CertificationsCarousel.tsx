@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Column, Flex, Heading, Text, Media, Button } from "@once-ui-system/core";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Image from "next/image";
 import { getImageUrl } from "@/utils/imageHash";
 
@@ -9,7 +10,7 @@ interface Certification {
   id: string;
   title: string;
   issuer: string;
-  image: string; // Agora é um hash que será usado na API
+  image: string;
   description: string;
   date: string;
   category: string;
@@ -389,12 +390,15 @@ const certifications: Certification[] = [
 
 export default function CertificationsCarousel() {
   const { width } = useWindowSize();
+  const { t } = useLanguage();
   const isMobile = width <= 768;
+  const isTablet = width <= 1024 && width > 768;
   
   const [currentCategory, setCurrentCategory] = useState("Endpoint & EDR");
   const [currentSubcategory, setCurrentSubcategory] = useState("Bitdefender");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
 
   // Get unique categories
   const categories = Array.from(new Set(certifications.map(cert => cert.category)));
@@ -420,16 +424,16 @@ export default function CertificationsCarousel() {
 
   // Auto-play functionality
   useEffect(() => {
-    if (!isAutoPlaying || filteredCertifications.length <= 1) return;
+    if (!isAutoPlaying || filteredCertifications.length <= 1 || isHovering) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => 
         prevIndex === filteredCertifications.length - 1 ? 0 : prevIndex + 1
       );
-    }, 4000); // Change every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, filteredCertifications.length]);
+  }, [isAutoPlaying, filteredCertifications.length, isHovering]);
 
   // Update currentIndex if it's out of bounds
   useEffect(() => {
@@ -443,32 +447,25 @@ export default function CertificationsCarousel() {
     setCurrentIndex(0);
   }, [currentCategory, currentSubcategory]);
 
-  // Update subcategory when category changes (only if current subcategory is not valid)
+  // Update subcategory when category changes
   useEffect(() => {
-    console.log('useEffect triggered - Category:', currentCategory, 'Subcategory:', currentSubcategory, 'Available:', subcategories);
     if (subcategories.length > 0 && subcategories[0] && !subcategories.includes(currentSubcategory)) {
-      console.log('Fixing subcategory from', currentSubcategory, 'to', subcategories[0]);
       setCurrentSubcategory(subcategories[0]);
     }
   }, [currentCategory, subcategories, currentSubcategory]);
 
-  // Debug logs
-  console.log('Current Category:', currentCategory);
-  console.log('Current Subcategory:', currentSubcategory);
-  console.log('Available Subcategories:', subcategories);
-  console.log('Filtered Certifications:', filteredCertifications.length);
-  console.log('Filtered Certifications Details:', filteredCertifications.map(c => ({ title: c.title, subcategory: c.subcategory, image: c.image })));
-
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === filteredCertifications.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex === filteredCertifications.length - 1 ? 0 : prevIndex + 1;
+      return newIndex;
+    });
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? filteredCertifications.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex === 0 ? filteredCertifications.length - 1 : prevIndex - 1;
+      return newIndex;
+    });
   };
 
   const goToSlide = (index: number) => {
@@ -477,25 +474,35 @@ export default function CertificationsCarousel() {
 
   const currentCert = filteredCertifications[safeCurrentIndex];
 
-  // Debug current certification
-  console.log('Current Certification:', currentCert?.title, 'Image:', currentCert?.image);
+  // Get next and previous certifications for preview effect
+  const getNextCert = (index: number) => {
+    if (filteredCertifications.length === 0) return null;
+    const nextIndex = (index + 1) % filteredCertifications.length;
+    return filteredCertifications[nextIndex];
+  };
+
+  const getPrevCert = (index: number) => {
+    if (filteredCertifications.length === 0) return null;
+    const prevIndex = index === 0 ? filteredCertifications.length - 1 : index - 1;
+    return filteredCertifications[prevIndex];
+  };
 
   // If no certifications, show empty state
   if (filteredCertifications.length === 0) {
     return (
-      <Column gap="l" horizontal="center" paddingY="xl" className="mobile-padding">
-        <Heading as="h2" variant="display-strong-s" align="center" className="mobile-reduce-animations">
-          Certificações & Badges
+      <Column fillWidth gap="xl" paddingY="xl" style={{ minHeight: "100vh" }} className="certifications-container">
+        <Heading as="h2" variant="display-strong-s" align="center">
+          {t('certifications.subtitle')}
         </Heading>
         
         <Flex horizontal="center">
-          <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }} className="text-mobile">
-            Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
+          <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }}>
+            {t('certifications.description')}
           </Text>
         </Flex>
 
-        <Text variant="body-default-m" align="center" onBackground="neutral-weak" className="text-mobile">
-          Nenhuma certificação encontrada para a categoria selecionada.
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+          {t('common.noData')}
         </Text>
       </Column>
     );
@@ -504,39 +511,66 @@ export default function CertificationsCarousel() {
   // Safety check for currentCert
   if (!currentCert) {
     return (
-      <Column gap="l" horizontal="center" paddingY="xl" className="mobile-padding">
-        <Text variant="body-default-m" align="center" onBackground="neutral-weak" className="text-mobile">
-          Carregando certificações...
+      <Column fillWidth gap="xl" paddingY="xl" style={{ minHeight: "100vh" }} className="certifications-container">
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+          {t('common.loading')}
         </Text>
       </Column>
     );
   }
 
+  // Get preview certifications safely
+  const nextCert = getNextCert(safeCurrentIndex);
+  const prevCert = getPrevCert(safeCurrentIndex);
+
   return (
-    <Column fillWidth gap="xl" paddingY="xl" className="mobile-padding">
-      <Heading as="h1" variant="display-strong-l" align="center" className="mobile-reduce-animations">
-        Certificações & Badges
-      </Heading>
-      
-      <Flex horizontal="center">
-        <Text variant="body-default-l" align="center" onBackground="neutral-weak" style={{ maxWidth: "600px" }} className="text-mobile">
-          Credenciais e reconhecimentos em segurança da informação, pentesting e tecnologias de proteção
+    <Column fillWidth gap="xl" paddingY="xl" style={{ minHeight: "100vh" }} className="certifications-container">
+      {/* Header Section */}
+      <Column gap="l" horizontal="center" className="certifications-header">
+        <Heading 
+          as="h1" 
+          variant="display-strong-l" 
+          align="center"
+          className="certifications-title"
+        >
+          {t('certifications.subtitle')}
+        </Heading>
+        
+        <Text 
+          variant="body-default-l" 
+          align="center" 
+          onBackground="neutral-weak" 
+          className="certifications-subtitle"
+        >
+          {t('certifications.description')}
         </Text>
-      </Flex>
+      </Column>
 
       {/* Category Tabs */}
-      <Flex horizontal="center" gap="m" wrap className="mobile-gap">
+      <Flex horizontal="center" gap="m" wrap className="certifications-filters">
         {categories.map((category) => (
           <Button
             key={category}
             variant={currentCategory === category ? "primary" : "secondary"}
             size="m"
             onClick={() => setCurrentCategory(category)}
-            className="mobile-reduce-animations"
             style={{
-              borderRadius: "24px",
-              padding: "8px 16px",
-              fontSize: isMobile ? "14px" : "16px"
+              borderRadius: "30px",
+              padding: "16px 28px",
+              fontSize: isMobile ? "14px" : "16px",
+              fontWeight: "700",
+              transition: "all 0.3s ease",
+              boxShadow: currentCategory === category 
+                ? "0 12px 35px rgba(102, 126, 234, 0.4)" 
+                : "0 4px 15px rgba(0, 0, 0, 0.1)",
+              transform: currentCategory === category ? "translateY(-2px)" : "translateY(0)",
+              background: currentCategory === category 
+                ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                : "rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(20px)",
+              border: currentCategory === category 
+                ? "2px solid rgba(102, 126, 234, 0.3)" 
+                : "1px solid rgba(255, 255, 255, 0.2)"
             }}
           >
             {category}
@@ -544,23 +578,28 @@ export default function CertificationsCarousel() {
         ))}
       </Flex>
 
-      {/* Subcategory Tabs - Show for all categories that have subcategories */}
+      {/* Subcategory Tabs */}
       {subcategories.length > 0 && (
-        <Flex horizontal="center" gap="s" wrap className="mobile-gap">
+        <Flex horizontal="center" gap="s" wrap className="certifications-filters">
           {subcategories.map((subcategory) => (
             <Button
               key={subcategory}
               variant={currentSubcategory === subcategory ? "primary" : "tertiary"}
               size="s"
-              onClick={() => {
-                console.log('Clicking subcategory:', subcategory);
-                setCurrentSubcategory(subcategory!);
-              }}
-              className="mobile-reduce-animations"
+              onClick={() => setCurrentSubcategory(subcategory!)}
               style={{
-                borderRadius: "16px",
-                padding: "6px 12px",
-                fontSize: isMobile ? "12px" : "14px"
+                borderRadius: "25px",
+                padding: "10px 20px",
+                fontSize: isMobile ? "12px" : "14px",
+                fontWeight: "600",
+                transition: "all 0.3s ease",
+                background: currentSubcategory === subcategory 
+                  ? "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" 
+                  : "rgba(255, 255, 255, 0.05)",
+                backdropFilter: "blur(15px)",
+                border: currentSubcategory === subcategory 
+                  ? "2px solid rgba(240, 147, 251, 0.3)" 
+                  : "1px solid rgba(255, 255, 255, 0.1)"
               }}
             >
               {subcategory}
@@ -569,86 +608,109 @@ export default function CertificationsCarousel() {
         </Flex>
       )}
 
-      {/* Carousel Container */}
+      {/* Enhanced Carousel Container with Infinite Effect */}
       <Flex 
         fillWidth 
         maxWidth="l" 
         horizontal="center" 
-        gap="l"
         style={{ position: "relative" }}
-        className="mobile-gap"
+        className="certifications-carousel"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
       >
-        {/* Previous Button */}
-        <Button
-          variant="secondary"
-          size="l"
-          prefixIcon="chevronLeft"
-          onClick={prevSlide}
-          className="mobile-reduce-animations"
-          style={{
-            position: isMobile ? "relative" : "absolute",
-            left: isMobile ? "auto" : "-70px",
-            top: isMobile ? "auto" : "50%",
-            transform: isMobile ? "none" : "translateY(-50%)",
-            zIndex: 10,
-            minWidth: "56px",
-            height: "56px",
-            borderRadius: "50%",
-            backgroundColor: "var(--surface-elevated)",
-            border: "2px solid var(--neutral-alpha-weak)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            marginBottom: isMobile ? "16px" : "0"
-          }}
-        />
+        {/* Previous Preview Card (Left) */}
+        {!isMobile && filteredCertifications.length >= 2 && prevCert && (
+          <div 
+            className="preview-card"
+            style={{
+              left: isTablet ? "-150px" : "-200px",
+              width: isTablet ? "140px" : "180px",
+              height: isTablet ? "180px" : "240px"
+            }}
+          >
+            <div style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              borderRadius: "20px",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden"
+            }}>
+              <Image
+                src={`/api/images?hash=${prevCert.image}`}
+                alt={prevCert.title}
+                width={isTablet ? 100 : 140}
+                height={isTablet ? 130 : 180}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  borderRadius: "15px",
+                  filter: "grayscale(30%) brightness(0.8)"
+                }}
+              />
+            </div>
+          </div>
+        )}
 
-        {/* Main Content */}
+        {/* Navigation Arrows */}
+        {!isMobile && filteredCertifications.length > 1 && (
+          <Button
+            variant="secondary"
+            size="l"
+            prefixIcon="chevronLeft"
+            onClick={prevSlide}
+            className="certifications-nav-button"
+            style={{
+              left: isTablet ? "-60px" : "-80px"
+            }}
+          />
+        )}
+
+        {/* Main Content Card */}
         <Column 
           fillWidth 
           maxWidth="l" 
           horizontal="center" 
           gap="xl"
           padding="xl"
-          className="mobile-padding"
+          className="certifications-card"
           style={{
-            border: "1px solid var(--neutral-alpha-weak)",
-            borderRadius: "20px",
-            backgroundColor: "var(--surface-background)",
-            minHeight: isMobile ? "400px" : "500px",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)"
+            transform: isHovering ? "scale(1.02)" : "scale(1)",
+            position: "relative"
           }}
         >
-          {/* Certification Image Container */}
+          {/* Background Effects */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "100%",
+            background: "radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%)",
+            opacity: 0.6,
+            pointerEvents: "none"
+          }} />
+
+          {/* Certification Image */}
           <Flex 
             horizontal="center" 
-            paddingY="xl"
-            style={{
-              width: "100%",
-              maxWidth: isMobile ? "300px" : "400px",
-              height: isMobile ? "200px" : "280px",
-              backgroundColor: "var(--surface-elevated)",
-              borderRadius: "16px",
-              border: "1px solid var(--neutral-alpha-weak)",
-              padding: isMobile ? "16px" : "25px"
-            }}
+            paddingY="l"
+            className="certifications-image-container"
           >
             <Image
               src={`/api/images?hash=${currentCert.image}`}
               alt={currentCert.title}
-              width={isMobile ? 268 : 350}
-              height={isMobile ? 168 : 230}
-              style={{
-                width: "100%",
-                height: isMobile ? "150px" : "200px",
-                objectFit: "contain",
-                borderRadius: "8px",
-                maxWidth: "100%"
-              }}
+              width={isMobile ? 280 : isTablet ? 320 : 352}
+              height={isMobile ? 180 : isTablet ? 200 : 240}
+              className="certifications-image"
               onError={(e) => {
                 console.error('Failed to load image:', currentCert.image);
                 (e.target as HTMLImageElement).style.display = 'none';
-              }}
-              onLoad={() => {
-                console.log('Image loaded successfully:', currentCert.image);
               }}
             />
             {!currentCert.image && (
@@ -657,20 +719,33 @@ export default function CertificationsCarousel() {
                 vertical="center"
                 style={{
                   width: "100%",
-                  height: isMobile ? "150px" : "200px",
-                  backgroundColor: "var(--neutral-alpha-weak)",
-                  borderRadius: "8px",
-                  color: "var(--neutral-on-background-weak)"
+                  height: "100%",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                  borderRadius: "15px",
+                  color: "var(--neutral-on-background-weak)",
+                  border: "2px solid rgba(255, 255, 255, 0.1)"
                 }}
               >
-                <Text variant="body-default-m" className="text-mobile">Imagem não disponível</Text>
+                <Text variant="body-default-m">Imagem não disponível</Text>
               </Flex>
             )}
           </Flex>
 
           {/* Certification Details */}
-          <Column gap="l" horizontal="center" style={{ textAlign: "center", maxWidth: "600px" }} className="mobile-gap">
-            <Heading as="h2" variant="heading-strong-l" style={{ lineHeight: "1.3" }} className="text-mobile">
+          <Column gap="l" horizontal="center" className="certifications-details">
+            <Heading 
+              as="h2" 
+              variant="heading-strong-l" 
+              style={{ 
+                lineHeight: "1.3",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                fontWeight: "800",
+                fontSize: isMobile ? "1.6rem" : isTablet ? "1.8rem" : "2rem"
+              }}
+            >
               {currentCert.title}
             </Heading>
             
@@ -678,109 +753,211 @@ export default function CertificationsCarousel() {
               variant="body-default-l" 
               onBackground="neutral-weak"
               style={{ 
-                lineHeight: "1.6",
-                color: "var(--neutral-on-background-weak)"
+                lineHeight: "1.8",
+                color: "var(--neutral-on-background-weak)",
+                maxWidth: "600px",
+                fontWeight: "500"
               }}
-              className="text-mobile"
             >
               {currentCert.description}
             </Text>
             
-            <Flex gap="m" vertical="center" wrap style={{ justifyContent: "center" }} className="mobile-gap">
+            {/* Metadata Tags */}
+            <Flex gap="m" vertical="center" wrap style={{ justifyContent: "center" }} className="certifications-metadata">
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
                   color: "var(--neutral-on-background-weak)",
-                  fontWeight: "500"
+                  fontWeight: "700",
+                  padding: "8px 16px",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                  borderRadius: "15px",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                  backdropFilter: "blur(15px)"
                 }}
               >
                 {currentCert.issuer}
               </Text>
-              <Text variant="body-default-s" onBackground="neutral-weak">
-                •
-              </Text>
+              <Text variant="body-default-s" onBackground="neutral-weak">•</Text>
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
-                  color: "var(--neutral-on-background-weak)"
+                  color: "var(--neutral-on-background-weak)",
+                  fontWeight: "600"
                 }}
               >
                 {currentCert.date}
               </Text>
-              <Text variant="body-default-s" onBackground="neutral-weak">
-                •
-              </Text>
+              <Text variant="body-default-s" onBackground="neutral-weak">•</Text>
               <Text 
                 variant="body-default-s" 
                 onBackground="neutral-weak"
                 style={{ 
-                  color: "var(--neutral-on-background-weak)"
+                  color: "var(--neutral-on-background-weak)",
+                  fontWeight: "600"
                 }}
               >
                 {currentCert.category}
               </Text>
             </Flex>
           </Column>
+
+          {/* Counter Inside Card - At the bottom */}
+          {filteredCertifications.length > 1 && (
+            <Flex 
+              horizontal="center" 
+              gap="s" 
+              paddingY="m" 
+              className="certifications-dots"
+              style={{
+                background: "rgba(0, 0, 0, 0.5)",
+                borderRadius: "15px",
+                padding: "6px 12px",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                marginTop: "auto"
+              }}
+            >
+              {filteredCertifications.map((_, index) => (
+                <Button
+                  key={index}
+                  variant="tertiary"
+                  size="s"
+                  onClick={() => goToSlide(index)}
+                  className={`certifications-dot ${index === currentIndex ? 'active' : ''}`}
+                  style={{
+                    width: isMobile ? "6px" : "8px",
+                    height: isMobile ? "6px" : "8px",
+                    borderRadius: "50%",
+                    padding: 0,
+                    backgroundColor: index === currentIndex 
+                      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" 
+                      : "rgba(255, 255, 255, 0.5)",
+                    transition: "all 0.3s ease",
+                    transform: index === currentIndex ? "scale(1.2)" : "scale(1)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    cursor: "pointer",
+                    margin: "0 1px"
+                  }}
+                />
+              ))}
+            </Flex>
+          )}
         </Column>
 
-        {/* Next Button */}
-        <Button
-          variant="secondary"
-          size="l"
-          prefixIcon="chevronRight"
-          onClick={nextSlide}
-          className="mobile-reduce-animations"
-          style={{
-            position: isMobile ? "relative" : "absolute",
-            right: isMobile ? "auto" : "-70px",
-            top: isMobile ? "auto" : "50%",
-            transform: isMobile ? "none" : "translateY(-50%)",
-            zIndex: 10,
-            minWidth: "56px",
-            height: "56px",
-            borderRadius: "50%",
-            backgroundColor: "var(--surface-elevated)",
-            border: "2px solid var(--neutral-alpha-weak)",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-            marginTop: isMobile ? "16px" : "0"
-          }}
-        />
-      </Flex>
-
-      {/* Dots Indicator */}
-      <Flex horizontal="center" gap="s" paddingY="l" className="mobile-gap">
-        {filteredCertifications.map((_, index) => (
-          <Button
-            key={index}
-            variant="tertiary"
-            size="s"
-            onClick={() => goToSlide(index)}
-            className="mobile-reduce-animations"
+        {/* Next Preview Card (Right) */}
+        {!isMobile && filteredCertifications.length >= 2 && nextCert && (
+          <div 
+            className="preview-card"
             style={{
-              width: "14px",
-              height: "14px",
-              borderRadius: "50%",
-              padding: 0,
-              backgroundColor: index === currentIndex 
-                ? "var(--brand-on-background-strong)" 
-                : "var(--neutral-alpha-weak)",
-              transition: "all 0.3s ease",
-              transform: index === currentIndex ? "scale(1.2)" : "scale(1)"
+              right: isTablet ? "-150px" : "-200px",
+              width: isTablet ? "140px" : "180px",
+              height: isTablet ? "180px" : "240px"
+            }}
+          >
+            <div style={{
+              width: "100%",
+              height: "100%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              borderRadius: "20px",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden"
+            }}>
+              <Image
+                src={`/api/images?hash=${nextCert.image}`}
+                alt={nextCert.title}
+                width={isTablet ? 100 : 140}
+                height={isTablet ? 130 : 180}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  borderRadius: "15px",
+                  filter: "grayscale(30%) brightness(0.8)"
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Next Button */}
+        {!isMobile && filteredCertifications.length > 1 && (
+          <Button
+            variant="secondary"
+            size="l"
+            prefixIcon="chevronRight"
+            onClick={nextSlide}
+            className="certifications-nav-button"
+            style={{
+              right: isTablet ? "-60px" : "-80px"
             }}
           />
-        ))}
+        )}
       </Flex>
 
+      {/* Mobile Navigation */}
+      {isMobile && filteredCertifications.length > 1 && (
+        <Flex horizontal="center" gap="m" paddingY="l" className="certifications-navigation">
+          <Button
+            variant="secondary"
+            size="m"
+            prefixIcon="chevronLeft"
+            onClick={prevSlide}
+            className="certifications-nav-button"
+            style={{
+              minWidth: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              border: "2px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(15px)"
+            }}
+          />
+          <Button
+            variant="secondary"
+            size="m"
+            prefixIcon="chevronRight"
+            onClick={nextSlide}
+            className="certifications-nav-button"
+            style={{
+              minWidth: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              border: "2px solid rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 8px 20px rgba(0, 0, 0, 0.3)",
+              backdropFilter: "blur(15px)"
+            }}
+          />
+        </Flex>
+      )}
+
       {/* Auto-play Toggle */}
-      <Flex horizontal="center" paddingTop="m">
+      <Flex horizontal="center" paddingTop="m" paddingBottom="l" className="certifications-autoplay">
         <Button
           variant="tertiary"
           size="s"
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
           prefixIcon={isAutoPlaying ? "pause" : "play"}
-          className="mobile-reduce-animations"
+          style={{
+            borderRadius: "25px",
+            padding: isMobile ? "6px 12px" : "8px 16px",
+            fontSize: isMobile ? "12px" : "14px",
+            fontWeight: "600",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+            backdropFilter: "blur(15px)",
+            minWidth: isMobile ? "80px" : "100px"
+          }}
         >
           {isAutoPlaying ? "Pausar" : "Reproduzir"}
         </Button>

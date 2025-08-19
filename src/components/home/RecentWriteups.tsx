@@ -1,49 +1,24 @@
 "use client";
 
-import { Column, Flex, Heading, Text, Media, Button, RevealFx } from "@once-ui-system/core";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Column, Flex, Heading, Text, Media, Button } from "@once-ui-system/core";
+import Image from "next/image";
+import { getImageUrl } from "@/utils/imageHash";
 
 interface Post {
   slug: string;
   metadata: {
     title: string;
-    publishedAt: string;
-    summary: string;
-    images: string[];
+    summary?: string;
+    description?: string;
+    publishedAt?: string;
+    date?: string;
+    images?: string[];
   };
 }
 
-// Hook para detectar tamanho da tela de forma segura
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 1024,
-    height: typeof window !== 'undefined' ? window.innerHeight : 768,
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', handleResize);
-      handleResize();
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, []);
-
-  return windowSize;
-}
-
 export function RecentWriteups() {
-  const router = useRouter();
-  const { width } = useWindowSize();
-  const isMobile = width <= 768;
-  
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -53,13 +28,14 @@ export function RecentWriteups() {
         const response = await fetch('/api/posts');
         if (response.ok) {
           const data = await response.json();
-          // Pegar apenas os 3 mais recentes
-          setPosts(data.slice(0, 3));
+          setPosts(data.slice(0, 3)); // Mostrar apenas os 3 posts mais recentes
         } else {
-          console.error('Failed to fetch posts');
+          console.error('Failed to fetch posts:', response.status);
+          setPosts([]);
         }
       } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error('Failed to fetch posts:', error);
+        setPosts([]);
       } finally {
         setLoading(false);
       }
@@ -68,156 +44,206 @@ export function RecentWriteups() {
     fetchPosts();
   }, []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    };
-    return date.toLocaleDateString('en-US', options);
-  };
-
-  const handleClick = (slug: string) => {
-    router.push(`/work/${slug}`);
-  };
-
   if (loading) {
     return (
-      <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
-        <Heading as="h2" variant="display-strong-s" align="center" className="mobile-reduce-animations">
-          Write-ups Recentes
-        </Heading>
-        <Text align="center" className="text-mobile">Carregando...</Text>
+      <Column gap="l" horizontal="center" paddingY="xl">
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+          Carregando posts recentes...
+        </Text>
       </Column>
     );
   }
 
   if (posts.length === 0) {
-    return null;
+    return (
+      <Column gap="l" horizontal="center" paddingY="xl">
+        <Text variant="body-default-m" align="center" onBackground="neutral-weak">
+          Nenhum post encontrado.
+        </Text>
+      </Column>
+    );
   }
 
   return (
-    <Column fillWidth gap="l" paddingY="xl" className="mobile-padding">
-      <RevealFx translateY="16" delay={0.8}>
-        <Heading as="h2" variant="display-strong-s" align="center" marginBottom="l" className="mobile-reduce-animations">
-          Write-ups Recentes
-        </Heading>
-      </RevealFx>
-
-      <RevealFx translateY="16" delay={0.9}>
-        <Column fillWidth gap="m" maxWidth="l" horizontal="center" className="mobile-gap">
-          {posts.map((post, index) => (
-            <Flex
-              key={post.slug}
-              fillWidth
+    <Column gap="xl" horizontal="center" paddingY="xl" style={{ position: "relative", zIndex: 1 }}>
+      {/* Premium Posts Grid */}
+      <Flex 
+        horizontal="center" 
+        gap="xl" 
+        wrap 
+        style={{ 
+          maxWidth: "1200px",
+          width: "100%"
+        }}
+      >
+        {posts.map((post, index) => (
+          <Link 
+            key={post.slug} 
+            href={`/work/${post.slug}`} 
+            style={{ textDecoration: "none", width: "100%", maxWidth: "380px" }}
+          >
+            <Column
               gap="l"
-              padding="m"
-              className="mobile-reduce-animations"
+              padding="xl"
               style={{
-                border: "1px solid var(--neutral-alpha-weak)",
-                borderRadius: "12px",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                backgroundColor: "var(--surface-background)",
-                flexDirection: isMobile ? "column" : "row",
-                alignItems: isMobile ? "center" : "flex-start",
-                textAlign: isMobile ? "center" : "left",
+                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                borderRadius: "24px",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(20px)",
+                transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                transform: "translateY(0)",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
+                position: "relative",
+                overflow: "hidden",
+                cursor: "pointer"
               }}
-              onClick={() => handleClick(post.slug)}
               onMouseEnter={(e) => {
-                if (!isMobile) {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
-                }
+                e.currentTarget.style.transform = "translateY(-8px) scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 20px 40px rgba(0, 0, 0, 0.2)";
+                e.currentTarget.style.border = "1px solid rgba(255, 255, 255, 0.3)";
               }}
               onMouseLeave={(e) => {
-                if (!isMobile) {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "none";
-                }
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.1)";
+                e.currentTarget.style.border = "1px solid rgba(255, 255, 255, 0.2)";
               }}
             >
-              {/* Imagem de Capa */}
-              <Flex 
-                style={{ 
-                  width: isMobile ? "100%" : "120px", 
-                  height: isMobile ? "160px" : "80px",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  flexShrink: 0,
-                  marginBottom: isMobile ? "12px" : "0"
-                }}
-              >
-                <Media
-                  src={post.metadata.images[0] || "/images/default-cover.jpg"}
-                  alt={post.metadata.title}
+              {/* Animated Background Effect */}
+              <div style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "100%",
+                background: "radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(240, 147, 251, 0.05) 0%, transparent 50%)",
+                opacity: 0.4,
+                pointerEvents: "none"
+              }} />
+
+              {/* Premium Image Container */}
+              {post.metadata.images && post.metadata.images.length > 0 && (
+                <Flex 
+                  horizontal="center" 
                   style={{
                     width: "100%",
-                    height: "100%",
-                    objectFit: "cover"
+                    height: "200px",
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                    borderRadius: "16px",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    overflow: "hidden",
+                    position: "relative"
                   }}
-                />
-              </Flex>
+                >
+                  <Image
+                    src={getImageUrl(post.metadata.images[0])}
+                    alt={post.metadata.title}
+                    width={360}
+                    height={200}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
+                    }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                      e.currentTarget.style.transform = "scale(1.05)";
+                    }}
+                    onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                  />
+                </Flex>
+              )}
 
-              {/* Conteúdo */}
-              <Column flex={1} gap="s" style={{ width: isMobile ? "100%" : "auto" }}>
+              {/* Premium Content */}
+              <Column gap="m" style={{ position: "relative", zIndex: 1 }}>
                 <Heading 
                   as="h3" 
-                  variant="heading-strong-m" 
-                  style={{ 
-                    margin: 0,
-                    color: "var(--neutral-on-background-strong)",
+                  variant="heading-strong-m"
+                  style={{
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    fontWeight: "700",
                     lineHeight: "1.3"
                   }}
-                  className="text-mobile"
                 >
                   {post.metadata.title}
                 </Heading>
                 
                 <Text 
-                  variant="body-default-s" 
+                  variant="body-default-m" 
                   onBackground="neutral-weak"
                   style={{ 
-                    margin: 0,
-                    lineHeight: "1.4",
-                    color: "var(--neutral-on-background-weak)"
-                  }}
-                  className="text-mobile"
-                >
-                  {post.metadata.summary}
-                </Text>
-                
-                <Text 
-                  variant="body-default-xs" 
-                  onBackground="neutral-weak"
-                  style={{ 
+                    lineHeight: "1.6",
                     color: "var(--neutral-on-background-weak)",
-                    fontSize: "12px"
+                    fontWeight: "500"
                   }}
                 >
-                  {formatDate(post.metadata.publishedAt)}
+                  {post.metadata.summary || post.metadata.description || "Descrição não disponível"}
                 </Text>
-              </Column>
-            </Flex>
-          ))}
-        </Column>
-      </RevealFx>
 
-      <RevealFx translateY="16" delay={1.0}>
-        <Flex horizontal="center" paddingTop="m">
+                {/* Premium Date Badge */}
+                <Flex horizontal="start">
+                  <Text 
+                    variant="body-default-s" 
+                    onBackground="neutral-weak"
+                    style={{ 
+                      padding: "6px 12px",
+                      background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                      borderRadius: "12px",
+                      border: "1px solid rgba(255, 255, 255, 0.2)",
+                      backdropFilter: "blur(10px)",
+                      fontWeight: "600",
+                      fontSize: "0.875rem"
+                    }}
+                  >
+                    {new Date(post.metadata.publishedAt || post.metadata.date || Date.now()).toLocaleDateString("pt-BR", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric"
+                    })}
+                  </Text>
+                </Flex>
+              </Column>
+            </Column>
+          </Link>
+        ))}
+      </Flex>
+
+      {/* Premium View All Button */}
+      <Flex horizontal="center" paddingTop="l">
+        <Link href="/work" style={{ textDecoration: "none" }}>
           <Button
-            href="/work"
             variant="secondary"
-            size="m"
-            weight="default"
-            arrowIcon
-            className="mobile-reduce-animations"
+            size="l"
+            style={{
+              borderRadius: "30px",
+              padding: "14px 28px",
+              fontSize: "1rem",
+              fontWeight: "700",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)",
+              border: "2px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(15px)",
+              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+              transform: "translateY(0)"
+            }}
+            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)";
+              e.currentTarget.style.boxShadow = "0 12px 25px rgba(0, 0, 0, 0.2)";
+            }}
+            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.currentTarget.style.transform = "translateY(0) scale(1)";
+              e.currentTarget.style.background = "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
           >
-            Ver Todos os Write-ups
+            Ver Todos os Posts
           </Button>
-        </Flex>
-      </RevealFx>
+        </Link>
+      </Flex>
     </Column>
   );
 } 

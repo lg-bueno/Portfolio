@@ -16,7 +16,7 @@ const nextConfig = {
     silenceDeprecations: ["legacy-js-api"],
   },
   experimental: {
-    optimizePackageImports: ['@once-ui-system/core'],
+    optimizePackageImports: ['@once-ui-system/core'], // Temporarily removed 'react-icons'
   },
   images: {
     remotePatterns: [
@@ -29,58 +29,9 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  // Otimizações para mobile
   compress: true,
   poweredByHeader: false,
   generateEtags: false,
-  // Configurações para melhor responsividade
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-          // Melhorar performance em mobile
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-    ];
-  },
-  // Otimizações para mobile
-  webpack: (config, { dev, isServer }) => {
-    // Melhorar performance em mobile
-    if (!dev && !isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
-      };
-    }
-    return config;
-  },
 };
 
 export default withMDX(nextConfig);

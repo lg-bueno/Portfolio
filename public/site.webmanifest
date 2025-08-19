@@ -1,0 +1,21 @@
+{
+  "name": "Leandro Gabriel - Portfolio",
+  "short_name": "LG Portfolio",
+  "description": "Portfolio de Leandro Gabriel - Cybersecurity & Full Stack Developer",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#151515",
+  "background_color": "#151515",
+  "display": "standalone",
+  "start_url": "/"
+} 

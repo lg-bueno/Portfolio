@@ -8,6 +8,14 @@ interface SecurityWrapperProps {
 
 export default function SecurityWrapper({ children }: SecurityWrapperProps) {
   useEffect(() => {
+    // Verificar se estamos em modo de desenvolvimento
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
+    // Se estiver em desenvolvimento, não aplicar nenhuma restrição
+    if (isDevelopment) {
+      return;
+    }
+    
     // Desabilitar menu de contexto (botão direito)
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -33,24 +41,31 @@ export default function SecurityWrapper({ children }: SecurityWrapperProps) {
       return false;
     };
 
-    // Detectar DevTools
+    // Detectar DevTools apenas em produção
     const detectDevTools = () => {
-      const threshold = 160;
-      const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-      const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-      
-      if (widthThreshold || heightThreshold) {
-        // Redirecionar ou mostrar aviso
-        document.body.innerHTML = '<h1>Acesso não autorizado detectado</h1>';
+      try {
+        const threshold = 160;
+        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+        
+        // Verificar se é um dispositivo móvel (não deve bloquear)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if ((widthThreshold || heightThreshold) && !isMobile) {
+          // Redirecionar ou mostrar aviso apenas se não for mobile
+          document.body.innerHTML = '<h1>Acesso não autorizado detectado</h1>';
+        }
+      } catch (error) {
+        console.error('Error in DevTools detection:', error);
       }
     };
 
-    // Aplicar listeners
+    // Aplicar listeners apenas em produção
     document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('selectstart', handleSelectStart);
     
-    // Verificar DevTools periodicamente
+    // Verificar DevTools periodicamente apenas em produção
     const interval = setInterval(detectDevTools, 1000);
 
     return () => {

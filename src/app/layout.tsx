@@ -1,165 +1,99 @@
+import { Providers } from '@/components/Providers';
+import SecurityWrapper from '@/components/SecurityWrapper';
+import RouteGuard from '@/components/RouteGuard';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+import { person, home, social } from '@/resources/content';
 import '@once-ui-system/core/css/styles.css';
 import '@once-ui-system/core/css/tokens.css';
-import '@/resources/custom.css'
+import '@/resources/custom.css';
 
-import classNames from "classnames";
-
-import { Background, Column, Flex, Meta, opacity, SpacingToken } from "@once-ui-system/core";
-import { Footer, Header, RouteGuard, Providers } from '@/components';
-import SecurityWrapper from '@/components/SecurityWrapper';
-import { baseURL, effects, fonts, style, dataStyle, home } from '@/resources';
-
-export async function generateMetadata() {
-  return Meta.generate({
-    title: home.title,
-    description: home.description,
-    baseURL: baseURL,
-    path: home.path,
-    image: home.image,
-  });
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <Flex
-      suppressHydrationWarning
-      as="html"
-      lang="en"
-      fillWidth
-      className={classNames(
-        fonts.heading.variable,
-        fonts.body.variable,
-        fonts.label.variable,
-        fonts.code.variable,
-      )}
-    >
+    <html lang="pt">
       <head>
-        <script
-          id="theme-init"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const root = document.documentElement;
-                  const defaultTheme = 'system';
-                  
-                  // Set defaults from config
-                  const config = ${JSON.stringify({
-                    brand: style.brand,
-                    accent: style.accent,
-                    neutral: style.neutral,
-                    solid: style.solid,
-                    'solid-style': style.solidStyle,
-                    border: style.border,
-                    surface: style.surface,
-                    transition: style.transition,
-                    scaling: style.scaling,
-                    'viz-style': dataStyle.variant,
-                  })};
-                  
-                  // Apply default values
-                  Object.entries(config).forEach(([key, value]) => {
-                    root.setAttribute('data-' + key, value);
-                  });
-                  
-                  // Resolve theme
-                  const resolveTheme = (themeValue) => {
-                    if (!themeValue || themeValue === 'system') {
-                      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                    }
-                    return themeValue;
-                  };
-                  
-                  // Apply saved theme
-                  const savedTheme = localStorage.getItem('data-theme');
-                  const resolvedTheme = resolveTheme(savedTheme);
-                  root.setAttribute('data-theme', resolvedTheme);
-                  
-                  // Apply any saved style overrides
-                  const styleKeys = Object.keys(config);
-                  styleKeys.forEach(key => {
-                    const value = localStorage.getItem('data-' + key);
-                    if (value) {
-                      root.setAttribute('data-' + key, value);
-                    }
-                  });
-                } catch (e) {
-                  console.error('Failed to initialize theme:', e);
-                  document.documentElement.setAttribute('data-theme', 'dark');
-                }
-              })();
-            `,
-          }}
-        />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content={home.subline} />
+        <meta name="keywords" content="desenvolvedor, full-stack, segurança, pentesting, portfolio" />
+        <meta name="author" content={person.name} />
+        <meta name="robots" content="index, follow" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={home.title} />
+        <meta property="og:description" content={home.subline} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://leandrobueno.dev" />
+        <meta property="og:image" content={person.avatar} />
+        <meta property="og:site_name" content={person.name} />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={home.title} />
+        <meta name="twitter:description" content={home.subline} />
+        <meta name="twitter:image" content={person.avatar} />
+        
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        
+        {/* Google Verification */}
+        <meta name="google-site-verification" content="your-verification-code" />
+        
+        {/* Preconnect */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        <title>{home.title}</title>
       </head>
-      <Providers>
-        <SecurityWrapper>
-          <Column as="body" background="page" fillWidth style={{minHeight: "100vh"}} margin="0" padding="0" horizontal="center">
-          <Background
-            position="fixed"
-            mask={{
-              x: effects.mask.x,
-              y: effects.mask.y,
-              radius: effects.mask.radius,
-              cursor: effects.mask.cursor,
-            }}
-            gradient={{
-              display: effects.gradient.display,
-              opacity: effects.gradient.opacity as opacity,
-              x: effects.gradient.x,
-              y: effects.gradient.y,
-              width: effects.gradient.width,
-              height: effects.gradient.height,
-              tilt: effects.gradient.tilt,
-              colorStart: effects.gradient.colorStart,
-              colorEnd: effects.gradient.colorEnd,
-            }}
-            dots={{
-              display: effects.dots.display,
-              opacity: effects.dots.opacity as opacity,
-              size: effects.dots.size as SpacingToken,
-              color: effects.dots.color,
-            }}
-            grid={{
-              display: effects.grid.display,
-              opacity: effects.grid.opacity as opacity,
-              color: effects.grid.color,
-              width: effects.grid.width,
-              height: effects.grid.height,
-            }}
-            lines={{
-              display: effects.lines.display,
-              opacity: effects.lines.opacity as opacity,
-              size: effects.lines.size as SpacingToken,
-              thickness: effects.lines.thickness,
-              angle: effects.lines.angle,
-              color: effects.lines.color,
-            }}
-          />
-          <Flex fillWidth minHeight="16" hide="s"/>
-            <Header />
-            <Flex
-              zIndex={0}
-              fillWidth
-              padding="l"
-              horizontal="center"
-              flex={1}
-              className="mobile-padding"
-            >
-              <Flex horizontal="center" fillWidth minHeight="0">
-                <RouteGuard>
-                  {children}
-                </RouteGuard>
-              </Flex>
-            </Flex>
-            <Footer/>
-          </Column>
-        </SecurityWrapper>
-      </Providers>
-    </Flex>
+      <body>
+        <LanguageProvider>
+          <Providers>
+            <SecurityWrapper>
+              <RouteGuard>
+                <div className="app-background">
+                  {/* Animated Background */}
+                  <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(240, 147, 251, 0.1) 0%, transparent 50%)",
+                    opacity: 0.6,
+                    pointerEvents: "none",
+                    animation: "backgroundShift 20s ease-in-out infinite"
+                  }} />
+                  
+                  {/* Floating Particles */}
+                  <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 30%), radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 30%)",
+                    opacity: 0.4,
+                    pointerEvents: "none",
+                    animation: "particleFloat 25s ease-in-out infinite"
+                  }} />
+                  
+                  <Header />
+                  <main style={{ position: "relative", zIndex: 1 }}>
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+              </RouteGuard>
+            </SecurityWrapper>
+          </Providers>
+        </LanguageProvider>
+      </body>
+    </html>
   );
 }

@@ -6,7 +6,7 @@ const person = {
   get name() {
     return `${this.firstName} ${this.lastName}`;
   },
-  role: "Developer",
+  role: "Cybersecurity Specialist & Full Stack Developer",
   avatar: "/images/avatar.jpg",
   email: "leandrogabriel@buenodevsec.com.br",
   location: "America/Sao_Paulo", // e.g., 'Europe/Vienna'
@@ -48,26 +48,22 @@ const home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name}&#39;s Portfolio`,
+  title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Desenvolvedor Full Stack com foco em Segurança</>,
+  headline: "Especialista em Cibersegurança & Desenvolvedor Full Stack",
   featured: {
     display: false,
-    title: <>Recent project: <strong className="ml-4">Once UI</strong></>,
+    title: "Recent project: Once UI",
     href: "/work/building-once-ui-a-customizable-design-system",
   },
-  subline: (
-    <>
-      Construo soluções seguras, escaláveis e eficientes, unindo desenvolvimento e práticas de cibersegurança.
-    </>
-  ),
+  subline: "Construo soluções seguras, escaláveis e eficientes, unindo desenvolvimento e práticas de cibersegurança.",
 };
 
 const about = {
   path: "/about",
-  label: "About",
-  title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} from ${person.location}`,
+  label: "Sobre",
+  title: `Sobre – ${person.name}`,
+  description: `Conheça ${person.name}, especialista em cibersegurança e desenvolvedor full stack`,
   tableOfContent: {
     display: true,
     subItems: false,
@@ -81,27 +77,30 @@ const about = {
   },
   intro: {
     display: true,
-    title: "Introduction",
+    title: "Apresentação",
     description: (
       <>
-        Desenvolvedor full stack com experiência em segurança ofensiva e defensiva, entusiasta de CTFs e automação de ferramentas.
+        Especialista em cibersegurança com foco em segurança ofensiva e defensiva, combinando experiência em desenvolvimento full stack com práticas avançadas de segurança. Entusiasta de CTFs, automação de ferramentas e pesquisa em segurança da informação.
       </>
     ),
   },
   work: {
-    display: true, // set to false to hide this section
-    title: "Work Experience",
+    display: true,
+    title: "Experiência Profissional",
     experiences: [
       {
         company: "NOX5 Offensive Security",
-        timeframe: "2024 - Atualmente",
-        role: "Técnico júnior",
+        timeframe: "2024 - Presente",
+        role: "Técnico de Segurança da Informação",
         achievements: [
           <>
-            Atuo na administração e otimização de ambientes Active Directory e Microsoft 365, essenciais para a gestão de identidades e acessos. Sou responsável pela configuração e proteção da infraestrutura de rede com firewalls Fortinet e Sophos.
+            Administração e otimização de ambientes Active Directory e Microsoft 365 para gestão de identidades e acessos corporativos.
           </>,
           <>
-            Gerencio dispositivos de rede e sistemas de backup (Proxmox, Veeam), e desenvolvo scripts para automatizar tarefas de segurança e operação, contribuindo para a eficiência e resiliência da defesa da empresa.
+            Configuração e proteção de infraestrutura de rede com firewalls Fortinet e Sophos, implementando políticas de segurança avançadas.
+          </>,
+          <>
+            Desenvolvimento de scripts para automação de tarefas de segurança e operação, contribuindo para a eficiência e resiliência da defesa da empresa.
           </>,
         ],
         images: [],
@@ -112,10 +111,10 @@ const about = {
         role: "Estagiário de Desenvolvimento Back-End",
         achievements: [
           <>
-            Colaborei no desenvolvimento e manutenção de sistemas internos utilizando C++ e Python.
+            Desenvolvimento e manutenção de sistemas internos utilizando C++ e Python, focando em performance e segurança.
           </>,
           <>
-            Auxiliei na modernização de aplicações legadas, contribuindo para maior eficiência e estabilidade.
+            Modernização de aplicações legadas, implementando melhorias de arquitetura e estabilidade.
           </>,
         ],
         images: [],
@@ -126,10 +125,10 @@ const about = {
         role: "Estagiário de Desenvolvimento Front-End",
         achievements: [
           <>
-            Desenvolvi interfaces responsivas com HTML5, CSS3 e JavaScript, focando em acessibilidade e usabilidade.
+            Desenvolvimento de interfaces responsivas com HTML5, CSS3 e JavaScript, priorizando acessibilidade e usabilidade.
           </>,
           <>
-            Trabalhei com React.js para implementar funcionalidades modernas e otimizadas em projetos institucionais.
+            Implementação de funcionalidades modernas com React.js em projetos institucionais.
           </>,
         ],
         images: [],
@@ -142,53 +141,51 @@ const about = {
     institutions: [
       {
         name: "Acadi-TI",
-        description: <>Pós-graduação em Cibersegurança.</>,
+        description: <>Pós-graduação em Cibersegurança - Especialização em segurança ofensiva e defensiva.</>,
       },
       {
         name: "Universidade Estácio de Sá",
-        description: <>Bacharelado em Ciência da Computação.</>,
+        description: <>Bacharelado em Ciência da Computação - Formação sólida em fundamentos da computação.</>,
       },
     ],
   },
   technical: {
     display: true, 
-    title: "Habilidades Técnicas",
+    title: "Competências Técnicas",
     skills: [
       {
-        title: "Linguagens de Programação",
-        description: <>Python, Bash Scripting, C/C++ e JavaScript.</>, 
+        title: "Desenvolvimento",
+        description: <>Python, JavaScript, C/C++, Bash Scripting, React.js, Node.js, SQL, Git.</>, 
         images: [],
       },
       {
-        title: "Sistemas Operacionais",
-        description: <>Kali Linux, Windows, Windows Server, Ubuntu e Ubuntu Server</>,
+        title: "Segurança da Informação",
+        description: <>Pentesting, análise de malware, forense digital, análise de vulnerabilidades, CTFs.</>,
         images: [],
       },
       {
-        title: "Ferramentas de Segurança",
-        description: <>Nmap, Subfinder, Burp Suite, SQLMap, Aircrack-ng, Wireshark, Hashcat, entre outros. </>,
+        title: "Ferramentas e Tecnologias",
+        description: <>Kali Linux, Windows Server, Ubuntu, Nmap, Burp Suite, Wireshark, Metasploit, entre outras.</>,
         images: [],
       },
     ],
   },
 };
 
-
-
 const work = {
   path: "/work",
   label: "Write-ups",
-  title: `Security Write-ups – ${person.name}`,
-  description: `Security research and CTF write-ups by ${person.name}`,
+  title: `Write-ups de Segurança – ${person.name}`,
+  description: `Pesquisas em segurança e write-ups de CTFs por ${person.name}`,
   // Create new write-up pages by adding a new .mdx file to app/work/projects
   // All write-ups will be listed on the /home and /work routes
 };
 
 const certifications = {
   path: "/certifications",
-  label: "Certifications",
-  title: `Certifications & Badges – ${person.name}`,
-  description: `Credentials and recognitions in information security`,
+  label: "Certificações",
+  title: `Certificações e Badges – ${person.name}`,
+  description: `Credenciais e reconhecimentos em segurança da informação`,
 };
 
 export { person, social, newsletter, home, about, work, certifications };

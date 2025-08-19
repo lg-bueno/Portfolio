@@ -1,0 +1,132 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "about": "Sobre",
+    "writeups": "Write-ups",
+    "certifications": "Certificaciones"
+  },
+  "header": {
+    "portfolio": "Portafolio",
+    "location": "Goiânia, BR"
+  },
+  "home": {
+    "hero": {
+      "headline": "Especialista en Ciberseguridad & Desarrollador Full Stack",
+      "subline": "Transformando ideas en soluciones digitales innovadoras con enfoque en seguridad y rendimiento",
+      "viewWriteups": "Ver Write-ups",
+      "aboutMe": "Sobre Mí"
+    },
+    "recentWriteups": {
+      "title": "Write-ups Recientes",
+      "subtitle": "Últimos artículos y write-ups sobre seguridad, pentesting y desarrollo",
+      "viewAll": "Ver Todos"
+    }
+  },
+  "about": {
+    "title": "Sobre Mí",
+    "description": "Especialista en ciberseguridad y desarrollador apasionado por la tecnología",
+    "name": "Leandro Gabriel",
+    "role": "Especialista en Ciberseguridad & Desarrollador Full Stack",
+    "social": {
+      "github": "🐙 GitHub",
+      "linkedin": "💼 LinkedIn",
+      "email": "📧 Email"
+    },
+    "introduction": {
+      "title": "Presentación",
+      "description": "Especialista en ciberseguridad con enfoque en seguridad ofensiva y defensiva, combinando experiencia en desarrollo full stack con prácticas avanzadas de seguridad. Entusiasta de CTFs, automatización de herramientas e investigación en seguridad de la información."
+    },
+    "workExperience": {
+      "title": "Experiencia Profesional",
+      "currentJob": {
+        "title": "Técnico de Seguridad de la Información",
+        "company": "NOX5 Offensive Security",
+        "period": "2024 - Presente",
+        "description1": "Administración y optimización de entornos Active Directory y Microsoft 365 para gestión de identidades y accesos corporativos.",
+        "description2": "Configuración y protección de infraestructura de red con firewalls Fortinet y Sophos, implementando políticas de seguridad avanzadas.",
+        "description3": "Desarrollo de scripts para automatización de tareas de seguridad y operación, contribuyendo a la eficiencia y resiliencia de la defensa de la empresa."
+      },
+      "backendIntern": {
+        "title": "Pasante de Desarrollo Back-End",
+        "company": "OVG - Organización de Voluntarias de Goiás",
+        "period": "2022 - 2023",
+        "description1": "Desarrollo y mantenimiento de sistemas internos utilizando C++ y Python, enfocándose en rendimiento y seguridad.",
+        "description2": "Modernización de aplicaciones legacy, implementando mejoras de arquitectura y estabilidad."
+      },
+      "frontendIntern": {
+        "title": "Pasante de Desarrollo Front-End",
+        "company": "Asamblea Legislativa del Estado de Goiás",
+        "period": "2021 - 2022",
+        "description1": "Desarrollo de interfaces responsivas con HTML5, CSS3 y JavaScript, priorizando accesibilidad y usabilidad.",
+        "description2": "Implementación de funcionalidades modernas con React.js en proyectos institucionales."
+      }
+    },
+    "academicBackground": {
+      "title": "Formación Académica",
+      "postgrad": {
+        "institution": "Acadi-TI",
+        "degree": "Posgrado en Ciberseguridad - Especialización en seguridad ofensiva y defensiva"
+      },
+      "bachelor": {
+        "institution": "Universidade Estácio de Sá",
+        "degree": "Licenciatura en Ciencias de la Computación - Formación sólida en fundamentos de la computación"
+      }
+    },
+    "technicalSkills": {
+      "title": "Competencias Técnicas",
+      "development": {
+        "title": "Desarrollo",
+        "python": "Python",
+        "javascript": "JavaScript",
+        "cpp": "C/C++",
+        "bash": "Bash Scripting",
+        "react": "React.js",
+        "nodejs": "Node.js",
+        "sql": "SQL",
+        "git": "Git"
+      },
+      "security": {
+        "title": "Seguridad de la Información",
+        "pentesting": "Pentesting",
+        "malware": "Análisis de malware",
+        "forensics": "Forense digital",
+        "vulnerability": "Análisis de vulnerabilidades",
+        "ctfs": "CTFs"
+      },
+      "tools": {
+        "title": "Herramientas y Tecnologías",
+        "kali": "Kali Linux",
+        "windowsServer": "Windows Server",
+        "ubuntu": "Ubuntu",
+        "nmap": "Nmap",
+        "burpSuite": "Burp Suite",
+        "wireshark": "Wireshark",
+        "metasploit": "Metasploit",
+        "others": "entre otras"
+      }
+    }
+  },
+  "work": {
+    "title": "Write-ups",
+    "subtitle": "Explora mis write-ups y proyectos sobre seguridad y desarrollo",
+    "description": "Artículos y proyectos sobre desarrollo y seguridad",
+    "viewProject": "Ver Proyecto",
+    "readMore": "Leer más"
+  },
+  "certifications": {
+    "title": "Certificaciones",
+    "subtitle": "Certificaciones y Badges",
+    "description": "Certificaciones profesionales en tecnología y seguridad",
+    "viewCert": "Ver Certificaciones",
+    "issuedBy": "Emitidas por"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error al cargar",
+    "noData": "No se encontraron datos"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados.",
+    "madeWith": "Hecho con ❤️ y Next.js"
+  }
+} 
