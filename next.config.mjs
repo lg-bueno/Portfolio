@@ -17,13 +17,6 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@once-ui-system/core'], // Temporarily removed 'react-icons'
-    serverComponentsExternalPackages: ['@vercel/og'],
-  },
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals.push('@vercel/og');
-    }
-    return config;
   },
   images: {
     remotePatterns: [
