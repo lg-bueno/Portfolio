@@ -16,7 +16,7 @@ const nextConfig = {
     silenceDeprecations: ["legacy-js-api"],
   },
   experimental: {
-    optimizePackageImports: ['@once-ui-system/core', 'react-icons'],
+    optimizePackageImports: ['@once-ui-system/core'], // Temporarily removed 'react-icons'
   },
   images: {
     remotePatterns: [

@@ -2,9 +2,11 @@
 
 import { Flex, Text, Button } from "@once-ui-system/core";
 import { person, social } from "@/resources/content";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   return (
     <Flex
@@ -96,7 +98,7 @@ export function Footer() {
             fontWeight: "500"
           }}
         >
-          © {currentYear} {person.name}. Todos os direitos reservados.
+          © {currentYear} {person.name}. {t('footer.copyright')}
         </Text>
 
         {/* Made with Love - Centered */}
@@ -112,7 +114,7 @@ export function Footer() {
             fontWeight: "500"
           }}
         >
-          Feito com ❤️ e Next.js
+          {t('footer.madeWith')}
         </Text>
       </Flex>
     </Flex>

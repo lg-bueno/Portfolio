@@ -124,5 +124,9 @@
     "loading": "Laden...",
     "error": "Fehler beim Laden",
     "noData": "Keine Daten gefunden"
+  },
+  "footer": {
+    "copyright": "Alle Rechte vorbehalten.",
+    "madeWith": "Erstellt mit ❤️ und Next.js"
   }
 } 
